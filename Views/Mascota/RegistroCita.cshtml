@@ -1,0 +1,419 @@
+﻿
+@{
+    ViewBag.Title = "RegistroCita";
+}
+@model Veterimax.Models.Cita
+@using System.Data
+@using Newtonsoft.Json
+@using Veterimax.Controllers
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>RegistroCita</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/formstyle.css">
+    <script type="text/javascript" src="~/js/Validacion.js"></script>
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <style>
+        #sidebar {
+            float: left;
+        }
+
+        #wrapper {
+            width: 75%;
+        }
+
+        .main {
+            width: 95%;
+        }
+    </style>
+</head>
+<body>
+    @{
+        Layout = "_LayoutPruebs";
+    }
+    <div id="wrapper">
+        <div class="main">
+            <div class="inner">
+                @{
+                    var cc = new MascotaController();
+                    var dtMascotas = cc.GetDuenios();
+                    var dtCitas = cc.GetCitas();
+                    List<SelectListItem> listaClientes = new List<SelectListItem>();
+                    List<SelectListItem> listaMascotas = new List<SelectListItem>();
+                    foreach (DataRow x in dtMascotas.Rows)
+                    {
+                        bool eval = true;
+                        for (var a = 0; a < listaClientes.Count; a++)
+                        {
+
+                            if (listaClientes[a].Value == x["IdCliente"].ToString())
+                            {
+                                eval = false;
+                            }
+                        }
+                        if (eval)
+                        {
+                            listaClientes.Add(new SelectListItem { Text = x["NombreCompleto"].ToString(), Value = x["IdCliente"].ToString() });
+                        }
+                    }
+                    foreach (DataRow x in dtMascotas.Rows)
+                    {
+                        listaMascotas.Add(new SelectListItem { Text = x["Nombre"].ToString(), Value = x["IdMascota"].ToString() });
+                    }
+                    var js = JsonConvert.SerializeObject(dtMascotas);
+                    int i = 0;
+                }
+                @using (Html.BeginForm("EliminarCita", "Mascota", FormMethod.Post, new { @style = "position:relative;" }))
+                {
+                    <div class="wrapper">
+                        <div class="main">
+                            <div class="inner">
+                                <section style="">
+                                    <div id="alertaExito"></div>
+                                    <input type="button" id="modalbtn" class="btn btn-success btn-size" value="Agregar" />
+                                    <input type="button" class="btn btn-primary btn-size" style="margin-left:1em;" id="editar" value="Editar" onclick="Editar()" />
+                                    <input type="submit" class="btn btn-primary btn-size" style="margin-left:1em;" id="eliminar" value="Cancelar" onclick="return Eliminar()" />
+                                    <input type="button" class="btn btn-success btn-size" style="margin-left:1em" id="atender" onclick="Atender()" value="Atender" />
+                                    <input type="hidden" id="listaCitas" name="listaCitas" value="0" />
+                                    <input type="text" id="buscar" placeholder="Filtrar" style="width:40%; margin-bottom:1em; position:relative; left:30em;" />
+                                    <table border="1" class="table">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th scope="col">
+                                                    Acciones
+                                                </th>
+                                                <th scope="col">
+                                                    ID
+                                                </th>
+                                                <th scope="col">
+                                                    Cliente
+                                                </th>
+                                                <th scope="col">
+                                                    Mascota
+                                                </th>
+                                                <th scope="col">
+                                                    Fecha Programada
+                                                </th>
+                                                <th scope="col">
+                                                    Horario
+                                                </th>
+                                                <th scope="col">
+                                                    Estado
+                                                </th>
+                                                <th scope="col">
+                                                    Fecha de Creacion
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table1" style="color:black;">
+                                            @foreach (DataRow a in dtCitas.Rows)
+                                            {
+                                                string str = a["Fecha"].ToString();
+                                                string[] fecha = str.Split(' ');
+                                                string id = i.ToString();
+                                                int rownum = i;
+                                                string clienteId = "cliente" + id;
+                                                string mascotaId = "mascota" + id;
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" />
+                                                        <input type="hidden" id="@clienteId" value="@a["IdCliente"].ToString()" />
+                                                        <input type="hidden" id="@mascotaId" value="@a["IdMascota"].ToString()" />
+                                                    </td>
+                                                    <td>@a["IdCita"].ToString()</td>
+                                                    <td>@a["NombreCompleto"].ToString()</td>
+                                                    <td>@a["Nombre"].ToString()</td>
+                                                    <td>@fecha[0]</td>
+                                                    <td>@fecha[1]</td>
+                                                    <td>@a["Estado"].ToString()</td>
+                                                    <td>@a["FechaRegistro"].ToString()</td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        </tbody>
+                                    </table>
+                                </section>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+                @using (Html.BeginForm("RegistroCita", "Mascota", FormMethod.Post))
+                {
+                    <div class="modal" tabindex="-1" role="dialog" id="myModal">
+                        <div class="modal-dialog" role="document" id="modalD">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title"><b id="titulo">Nueva Cita</b></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div id="alertaError">
+                                </div>
+                                <div class="modal-body modal-padding" id="modalBody">
+                                    <div class="row">
+                                        <div class="col-half">
+                                            <h6>Cliente</h6>
+                                            <div class="input-group">
+                                                @Html.DropDownListFor(m => m.IdCliente, listaClientes, "--Seleccionar--", new { @id = "cliente", @onchange = "get_Mascotas()", @style = "width:100%;" })
+                                            </div>
+                                        </div>
+                                        <div class="col-half">
+                                            <h6>Mascota</h6>
+                                            <div class="input-group">
+                                                @Html.DropDownListFor(m => m.IdMascota, listaMascotas, "--Seleccionar--", new { @id = "mascota", @disabled = "true", @style = "width:100%;" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-half">
+                                            <h6>Fecha Programada</h6>
+                                            <div class="input-group">
+                                                <div class="col-third">
+                                                    @Html.TextBox("dia", "", new { @placeholder = "DD", @id = "dia", @oninput = "dia_Input('dia')" })
+                                                </div>
+                                                <div class="col-third">
+                                                    @Html.TextBox("mes", "", new { @placeholder = "MM", @id = "mes", @oninput = "mes_Input('mes')" })
+                                                </div>
+                                                <div class="col-third">
+                                                    @Html.TextBox("ano", "", new { @placeholder = "YYYY", @id = "ano" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-half">
+                                            <h6>Horario</h6>
+                                            <div class="input-group">
+                                                <div class="col-third">
+                                                    @Html.TextBox("hora", "", new { @placeholder = "HH", @id = "hora", @oninput = "hora_Input('hora')" })
+                                                </div>
+                                                <div class="col-third">
+                                                    @Html.TextBox("minuto", "", new { @placeholder = "MI", @id = "minuto", @oninput = "minuto_Input('minuto')" })
+                                                </div>
+                                                <div class="col-third">
+                                                    @Html.DropDownList("tiempo", new List<SelectListItem>
+                                                                            {
+                                                                               new SelectListItem{Text = "AM", Value="AM"},
+                                                                               new SelectListItem{Text = "PM", Value="PM"}
+                                                                            }, new { @id = "tiempo", @style = "width:100%;" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="submit" value="Guardar" onclick="return validarFormulario('myModal')" style="background-color:#7ed321; color:white;" />
+                                <input type="hidden" name="evalHidden" id="evalHidden" value="false" />
+                                <input type="hidden" name="clienteHidden" id="clienteHidden" value="0" />
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (ViewBag.Message == "Entrada ya existe")
+                {
+                    ViewBag.Message = "Registro de una Cita";
+                    <script>
+                        window.onload = function () {
+
+                            document.getElementById("alertaError").className = "alert alert-danger";
+                            document.getElementById("alertaError").innerHTML = "Ya tiene una cita programada para ese horario.";
+                        }
+                        window.onclick = function () {
+                            document.getElementById("alertaExito").className = "";
+                            document.getElementById("alertaExito").innerHTML = "";
+                        }
+                    </script>
+
+                }
+                @if (ViewBag.Message == "Exito")
+                {
+                    <script>
+                window.onload = function () {
+                document.getElementById("alertaExito").className = "alert alert-success";
+                document.getElementById("alertaExito").innerHTML = "Ha creado una cita con exito!";
+                window.location.href = "@Url.Action("RegistroCita", "Mascota")";
+            }
+            window.onclick = function () {
+                document.getElementById("alertaExito").className = "";
+                document.getElementById("alertaExito").innerHTML = "";
+            }
+                    </script>
+
+                }
+                <style>
+                    .modal-padding {
+                        padding-left: 30px;
+                        padding-right: 30px;
+                    }
+
+                    .btn-size {
+                        width: 9%;
+                        padding: 0em;
+                    }
+
+                    body {
+                        background-color: white;
+                    }
+
+                    .dropSize {
+                        width: 100%;
+                    }
+
+                    h6 {
+                        color: green;
+                    }
+                </style>
+                <script>
+        function Editar() {
+            var count = -1;
+            var cn = 0;
+            document.getElementById('evalHidden').value = "true";
+            document.getElementById('titulo').innerHTML = "Edicion de Cita"
+            var table = document.getElementById('table1');
+            var check = table.getElementsByTagName("input");
+            for (var i = 0; i < check.length; i += 3) {
+                if (check[i].checked) {
+                    if (count > -1) {
+                        count = -1;
+                        document.getElementById("alertaExito").className = "alert alert-warning";
+                        document.getElementById("alertaExito").innerHTML = "No puede seleccionar mas de una fila para entrar en modo edicion.";
+                        break;
+                    }
+                    count = cn;
+                }
+                cn++;
+            }
+            if (count > -1) {
+                var row = table.rows[count];
+                var clientes = document.getElementById('cliente');
+                var mascotas = document.getElementById('mascota');
+                for (var i = 0; i < clientes.options.length; i++) {
+                    if (clientes.options[i].value == document.getElementById('cliente' + count).value) {
+                        clientes.selectedIndex = i;
+                        document.getElementById('clienteHidden').value = clientes.options[i].value;
+                        get_Mascotas();
+                        clientes.disabled = true;
+                        break;
+                    }
+                }
+                for (var i = 0; i < mascotas.options.length; i++) {
+                    if (mascotas.options[i].value == document.getElementById('mascota' + count).value) {
+                        mascotas.selectedIndex = i;
+                        break;
+                    }
+                }
+                var str = row.cells[4].innerHTML;
+                var arr1 = str.split('/');
+                var str2 = row.cells[5].innerHTML;
+                var arr2 = str2.split(':');
+                document.getElementById('dia').value = arr1[0];
+                document.getElementById('dia').addEventListener("input", dia_Input.bind(null, 'dia'));
+                document.getElementById('mes').value = arr1[1];
+                document.getElementById('mes').addEventListener("input", mes_Input.bind(null, 'mes'));
+                document.getElementById('ano').value = arr1[2];
+                //      document.getElementById('ano').addEventListener("input", ano_Input.bind(null, 'ano'));
+                document.getElementById('hora').value = arr2[0];
+                document.getElementById('hora').addEventListener("input", hora_Input.bind(null, 'hora'));
+                document.getElementById('minuto').value = arr2[1];
+                document.getElementById('minuto').addEventListener("input", minuto_Input.bind(null, 'minuto'));
+                $("#myModal").modal("show");
+            }
+            else {
+                document.getElementById("alertaExito").className = "alert alert-warning";
+                document.getElementById("alertaExito").innerHTML = "Debe seleccionar una fila para entrar en modo de edicion.";
+            }
+        }
+        function Eliminar() {
+            var listaEliminar = [];
+            var listaCitas = [];
+            var count = 0;
+            document.getElementById('evalHidden').value = "eliminar";
+            var table = document.getElementById('table1');
+            var check = table.getElementsByTagName("input");
+            for (var i = 0; i < check.length; i+=3) {
+                if (check[i].checked) {
+                    listaEliminar.push(count);
+                }
+                count++;
+            }
+            if (listaEliminar.length > 0) {
+                for (var i = 0; i < listaEliminar.length; i++) {
+                    var row = table.rows[listaEliminar[i]];
+                    listaCitas.push(row.cells[1].textContent);
+                }
+                document.getElementById("listaCitas").value = listaCitas.toString();
+                return true;
+            }
+            else {
+                document.getElementById("alertaExito").className = "alert alert-warning";
+                document.getElementById("alertaExito").innerHTML = "Debe seleccionar al menos una fila para eliminar";
+                return false;
+            }
+        }
+        function Atender() {
+            var count = -1;
+            var cn = 0;
+            var table = document.getElementById('table1');
+            var check = table.getElementsByTagName('input');
+            for (var i = 0; i < check.length; i+=3) {
+                if (check[i].checked) {
+                    if (count > -1) {
+                        count = -1;
+                        document.getElementById("alertaExito").className = "alert alert-warning";
+                        document.getElementById("alertaExito").innerHTML = "No puede atender mas de una cita a la vez.";
+                        break;
+                    }
+                    count = cn;
+                }
+                cn++;
+            }
+            if (count > -1) {
+                var cita = table.rows[count].cells[1].textContent;
+                var cliente = table.rows[count].cells[2].textContent;
+                var mascota = table.rows[count].cells[3].textContent;
+                localStorage.setItem("cita", cita);
+                localStorage.setItem("cliente", cliente);
+                localStorage.setItem("mascota", mascota);
+                window.location.href = "@Url.Action("RegistroProcedimiento", "Mascota")"
+            }
+        }
+        $(document).ready(function () {
+            $("#modalbtn").click(function () {
+                $("#myModal").modal("show")
+            });
+        });
+        $(document).ready(function () {
+            $("#myModal").on("hidden.bs.modal", function () {
+                window.location.href = "@Url.Action("RegistroCita", "Mascota")";
+            });
+        });
+        function get_Mascotas() {
+            var cliente = document.getElementById('cliente');
+            var mascota = document.getElementById('mascota');
+            mascota.disabled = false;
+            $(mascota).empty();
+            var data = @Html.Raw(js);
+            for (var i = 0; i < data.length; i++) {
+                if (cliente.value == data[i].IdCliente) {
+                    var opt = document.createElement("option");
+                    opt.value = data[i].IdMascota;
+                    opt.text = data[i].Nombre;
+                    mascota.add(opt);
+                }
+            }
+        }
+                </script>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html >
+    

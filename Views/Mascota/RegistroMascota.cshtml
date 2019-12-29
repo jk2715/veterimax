@@ -1,0 +1,358 @@
+﻿
+@{
+    ViewBag.Title = "RegistroMascota";
+}
+@model  Veterimax.Models.Mascota
+@using Veterimax.Controllers
+@using System.Data
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Registro de Mascotas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/formstyle.css">
+    <script type="text/javascript" src="~/js/Validacion.js"></script>
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script>
+        function Editar() {
+            document.getElementById('evalHidden').value = "true";
+            var count = -1;
+            document.getElementById('titulo').innerHTML = "Edicion de Mascota";
+            var table = document.getElementById('table1');
+            var check = table.getElementsByTagName("input");
+            for (var i = 0; i < check.length; i++) {
+                if (check[i].checked) {
+                    if (count > -1) {
+                        count = -1;
+                        document.getElementById("alertaExito").className = "alert alert-warning";
+                        document.getElementById("alertaExito").innerHTML = "No puede seleccionar mas de una fila para entrar en modo edicion.";
+                        break;
+                    }
+                    count = i;
+                }
+            }
+            if (count > -1) {
+                var row = table.rows[count];
+                var dd = document.getElementById('clientes');
+                var hidden = document.getElementById('hidden');
+                document.getElementById('mascotaId').value = row.cells[1].innerHTML;
+                for (var i = 0; i < dd.options.length; i++) {
+                    if (dd.options[i].text == row.cells[2].innerHTML) {
+                        dd.selectedIndex = i;
+                        hidden.value = dd.value;
+                        dd.disabled = true;
+                        break;
+                    }
+                }
+                document.getElementById('nombre').value = row.cells[3].innerHTML;
+                document.getElementById('especie').value = row.cells[4].innerHTML;
+                document.getElementById('raza').value = row.cells[5].innerHTML;
+                document.getElementById('sexo').value = row.cells[6].innerHTML;
+                document.getElementById('descripcion').value = row.cells[7].innerHTML;
+                var str = row.cells[7].innerHTML.replace(/ /g, "");
+                str = str.replace("12:00:00AM", "");
+                var arr = str.split("/");
+                document.getElementById('dia').value = arr[1];
+                document.getElementById('mes').value = arr[0];
+                document.getElementById('ano').value = arr[2];
+                document.getElementById('observaciones').value = row.cells[9].innerHTML;
+                $("#myModal").modal("show");
+            }
+            else {
+                document.getElementById("alertaExito").className = "alert alert-warning";
+                document.getElementById("alertaExito").innerHTML = "Debe seleccionar una fila para entrar en modo de edicion.";
+            }
+        }
+        function Eliminar() {
+            var listaEliminar = [];
+            var listaMascotas = [];
+            document.getElementById('evalHidden').value = "eliminar";
+            var table = document.getElementById('table1');
+            var check = table.getElementsByTagName("input");
+            for (var i = 0; i < check.length; i++) {
+                if (check[i].checked) {
+                    listaEliminar.push(i);
+                }
+            }
+            if (listaEliminar.length > 0) {
+                for (var i = 0; i < listaEliminar.length; i++) {
+                    var row = table.rows[listaEliminar[i]];
+                    listaMascotas.push(row.cells[1].textContent);
+                }
+                document.getElementById("listaMascotas").value = listaMascotas.toString();
+                return true;
+            }
+            else {
+                document.getElementById("alertaExito").className = "alert alert-warning";
+                document.getElementById("alertaExito").innerHTML = "Debe seleccionar al menos una fila para eliminar";
+                return false;
+            }
+        }
+        $(document).ready(function () {
+            $("#modalbtn").click(function () {
+                $("#myModal").modal("show")
+            });
+        });
+        $(document).ready(function () {
+            $("#myModal").on("hidden.bs.modal", function () {
+                window.location.href = "@Url.Action("RegistroMascota", "Mascota")";
+            });
+        });
+    </script>
+    <style>
+        #sidebar {
+            float: left;
+        }
+
+        #wrapper {
+            width: 75%;
+        }
+
+        .main {
+            width: 95%;
+        }
+    </style>
+</head>
+<body>
+    @{
+        Layout = "_LayoutPruebs";
+    }
+    @{
+        var cc = new MascotaController();
+        var dt = cc.GetMascotas();
+        int i = 0;
+    }
+    @using (Html.BeginForm("EliminarMascota", "Mascota", FormMethod.Post))
+    {
+        <div id="wrapper">
+            <div class="main">
+                <div class="inner">
+                    <section style="">
+                        <div id="alertaExito"></div>
+                        <input type="button" id="modalbtn" class="btn btn-success btn-size" value="Agregar" />
+                        <input type="button" class="btn btn-primary btn-size" style="margin-left:1em;" id="editar" value="Editar" onclick="Editar()" />
+                        <input type="submit" class="btn btn-primary btn-size" style="margin-left:1em;" id="eliminar" value="Eliminar" onclick="return Eliminar()" />
+                        <input type="hidden" id="listaMascotas" name="listaMacotas" value="0" />
+                        <input type="text" id="buscar" placeholder="Filtrar" style="width:30%; margin-left:20em; margin-bottom:1em;" />
+                        <table border="1" class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">
+                                        Acciones
+                                    </th>
+                                    <th scope="col">
+                                        ID
+                                    </th>
+                                    <th scope="col">
+                                        Due&ntilde;o
+                                    </th>
+                                    <th scope="col">
+                                        Nombre
+                                    </th>
+                                    <th scope="col">
+                                        Especie
+                                    </th>
+                                    <th scope="col">
+                                        Raza
+                                    </th>
+                                    <th scope="col">
+                                        Sexo
+                                    </th>
+                                    <th scope="col">
+                                        Descripcion
+                                    </th>
+                                    <th scope="col">
+                                        Fecha de Nacimiento
+                                    </th>
+                                    <th scope="col">
+                                        Observaciones
+                                    </th>
+                                    <th scope="col">
+                                        Fecha de Registro
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="table1" style="color: black;">
+                                @foreach (DataRow x in dt.Rows)
+                                {
+                                    string id = i.ToString();
+                                    int rownum = i;
+                                    <tr>
+                                        <td><input type="checkbox" /></td>
+                                        <td>@x["IdMascota"].ToString()</td>
+                                        <td>@x["Duenio"].ToString()</td>
+                                        <td>@x["Nombre"].ToString()</td>
+                                        <td>@x["Especie"].ToString()</td>
+                                        <td>@x["Raza"].ToString()</td>
+                                        <td>@x["Sexo"].ToString()</td>
+                                        <td>@x["Descripcion"].ToString()</td>
+                                        <td>@x["FechaNacimiento"].ToString()</td>
+                                        <td>@x["Observaciones"].ToString()</td>
+                                        <td>@x["FechaRegistro"].ToString()</td>
+                                    </tr>
+                                    i++;
+                                }
+                            </tbody>
+                        </table>
+                    </section>
+                </div>
+            </div>
+
+        </div>
+    }
+
+    @using (Html.BeginForm("RegistroMascota", "Mascota", FormMethod.Post))
+    {
+        List<SelectListItem> dropList = new List<SelectListItem>();
+        foreach (var x in Cliente.listaClientes)
+        {
+            dropList.Add(new SelectListItem { Text = x.Value, Value = x.Key.ToString() });
+        }
+        <div class="modal" tabindex="-1" role="dialog" id="myModal">
+            <div class="modal-dialog" role="document" id="modalD">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b id="titulo">Nueva Mascota</b></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="alertaError">
+                    </div>
+                    <div class="modal-body modal-padding" id="modalBody">
+                        <div class="row">
+                            <div class="col-half">
+                                <h6>Due&ntilde;o</h6>
+                                <div class="input-group">
+                                    @Html.DropDownListFor(m => m.IdCliente, dropList, "--Seleccionar--", new { @id = "clientes", @class = "dropSize" })
+                                </div>
+                            </div>
+                            <div class="col-half">
+                                <h6>Nombre</h6>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.Nombre, new { @placeholder = "Nombre", @id = "nombre", @oninput = "nombre_Input('nombre')" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-half">
+                                <h6>Especie</h6>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.Especie, new { @placeholder = "Especie", @id = "especie", @oninput = "nombre_Input('especie')" })
+                                </div>
+                            </div>
+                            <div class="col-half">
+                                <h6>Raza</h6>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.Raza, new { @placeholder = "Raza", @id = "raza" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h6>Descripcion</h6>
+                            <div class="input-group">
+                                @Html.TextBoxFor(m => m.Descripcion, new { @placeholder = "Descripcion", @id = "descripcion", @oninput = "nombre_Input('descripcion')" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-half">
+                                <h6>Fecha de Nacimiento</h6>
+                                <div class="input-group">
+                                    <div class="col-third">
+                                        @Html.TextBox("dia", "", new { @placeholder = "DD", @id = "dia", @oninput = "dia_Input('dia')" })
+                                    </div>
+                                    <div class="col-third">
+                                        @Html.TextBox("mes", "", new { @placeholder = "MM", @id = "mes", @oninput = "mes_Input('mes')" })
+                                    </div>
+                                    <div class="col-third">
+                                        @Html.TextBox("ano", "", new { @placeholder = "YYYY", @id = "ano" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-half">
+                                <h6>Sexo</h6>
+                                <div class="input-group">
+                                    @Html.DropDownListFor(m => m.Sexo, new List<SelectListItem>
+                                                                                                                                                              {
+                                                                                                                                                                  new SelectListItem{Text = "Masculino", Value="M"},
+                                                                                                                                                                  new SelectListItem{Text ="Femenino", Value="F"}
+                                                                                                                                                              }, "--Seleccionar--", new { @id = "sexo", @class = "dropSize" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h6>Observaciones</h6>
+                            <div class="input-group">
+                                @Html.TextAreaFor(m => m.Observaciones, new { @id = "observaciones" })
+                            </div>
+                        </div>
+                        <input type="hidden" id="hidden" name="hidden" value="0" />
+                        <input type="submit" value="Guardar" style="background-color:#7ed321; color:white;" />
+                        <input type="hidden" id="evalHidden" name="evalHidden" value="false" />
+                        <input type="hidden" id="mascotaId" name="mascotaId" value="0" />
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (ViewBag.Message == "Entrada ya existe")
+    {
+        ViewBag.Message = "Registro de una Mascota";
+        <script>
+            window.onload = function () {
+
+                document.getElementById("alertaError").className = "alert alert-danger";
+                document.getElementById("alertaError").innerHTML = "Ya existe una mascota con los datos ingresados en la base de datos.";
+            }
+            window.onclick = function () {
+                document.getElementById("alertaExito").className = "";
+                document.getElementById("alertaExito").innerHTML = "";
+            }
+        </script>
+
+    }
+    @if (ViewBag.Message == "Exito")
+    {
+        <script>
+            window.onload = function () {
+                document.getElementById("alertaExito").className = "alert alert-success";
+                document.getElementById("alertaExito").innerHTML = "Ha registrado una mascota con exito!";
+            }
+            window.onclick = function () {
+                document.getElementById("alertaExito").className = "";
+                document.getElementById("alertaExito").innerHTML = "";
+            }
+        </script>
+
+    }
+    <style>
+        .modal-padding {
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+        .btn-size {
+            width: 9%;
+        }
+
+        body {
+            background-color: white;
+        }
+
+        .dropSize {
+            width: 100%;
+        }
+
+        h6 {
+            color: green;
+        }
+    </style>
+</body>
+</html>
