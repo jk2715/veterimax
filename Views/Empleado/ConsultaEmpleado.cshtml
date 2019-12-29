@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "ConsultaEmpleado";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@model Veterimax.Models.Producto
+@{
+    ViewBag.Title = "ConsultaEmpleado";
+}
+    @using System.Data
+    @using Veterimax.Controllers
+    <html>
+    <head>
+        <title>Consulta de Empleados</title>
+    </head>
+    <body>
+        <h2><b>Lista de Empleados</b></h2>
+        <table border="1">
+            <tr>
+                <th>
+                    Nombre Completo
+                </th>
+                <th>
+                    Sexo
+                </th>
+                <th>
+                    Cedula
+                </th>
+                <th>
+                    Direccion
+                </th>
+                <th>
+                    Telefono
+                </th>
+                <th>
+                    Correo Electronico
+                </th>
+                <th>
+                    Fecha de Ingreso
+                </th>
+                <th>
+                    Posicion
+                </th>
+                <th>
+                    Salario
+                </th>
+            </tr>
+            @foreach (DataRow x in EmpleadoController.dt.Rows)
+            {
+            <tr>
+                <td>
+                    @x["NombreCompleto"].ToString()
+                </td>
+                <td>
+                    @x["Sexo"].ToString()
+                </td>
+                <td>
+                    @x["Cedula"].ToString()
+                </td>
+                <td>
+                    @x["Direccion"].ToString()
+                </td>
+                <td>
+                    @x["Telefono"].ToString()
+                </td>
+                <td>
+                    @x["CorreoElectronico"].ToString()
+                </td>
+                <td>
+                    @x["FechaRegistro"].ToString()
+                </td>
+                <td>
+                    @x["Titulo"].ToString()
+                </td>
+                <td>
+                    @x["Salario"].ToString()
+                </td>
+            </tr>
+
+            }
+        </table>
+    </body>
+</html>
+
