@@ -1,0 +1,387 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <title>Veterimax</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="PetClinic Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template,
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <link href="~/css/bootstrap.css" rel='stylesheet' type='text/css' />
+    <link href="~/css/style.css" rel='stylesheet' type='text/css' />
+    <script src="~/js/jquery.min.js"></script>
+    <!--start-smoth-scrolling-->
+    <script type="text/javascript" src="~/js/move-top.js"></script>
+    <script type="text/javascript" src="~/js/easing.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            $(".scroll").click(function (event) {
+                event.preventDefault();
+                $('html,body').animate({ scrollTop: $(this.hash).offset().top }, 1000);
+            });
+        });
+    </script>
+    <!--start-smoth-scrolling-->
+    <!--requried-jsfiles-for-owl-->
+    <link href="~/css/owl.carousel.css" rel="stylesheet">
+    <script>
+        $(document).ready(function () {
+            $("#owl-demo").owlCarousel({
+                items: 5,
+                lazyLoad: true,
+                autoPlay: true,
+                pagination: false,
+            });
+        });
+    </script>
+    <script src="~/js/owl.carousel.js"></script>
+    <!---//requried-jsfiles-for-owl-->
+    <!--script-->
+    <script src="~/js/modernizr.custom.97074.js"></script>
+    <script src="~/js/jquery.chocolat.js"></script>
+    <link rel="stylesheet" href="~/css/chocolat.css" type="text/css" media="screen">
+    <!--light-box-files-->
+    <script type="text/javascript">
+        $(function () {
+            $('.g1 a').Chocolat();
+        });
+    </script>
+</head>
+    <body>
+        <!--header-starts-->
+
+        <div class="logo">
+            <img src="~/images/Logo1.png" height="200" width="800"/>
+        </div>
+        <div class="header" id="home">
+            <div class="container">
+                <div class="header-top">
+                    <div class="col-md-6 header-left">
+                        <ul>
+                            <li><p>(809) 529-7778</p></li>
+                            <li><p>(809) 219-0763</p></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 header-right">
+                        <ul>
+                            <li><a href="#"><span class="fb"> </span></a></li>
+                            <li><a href="#"><span class="twit"> </span></a></li>
+                            <li><a href="#"><span class="pin"> </span></a></li>
+                            <li><a href="#"><span class="rss"> </span></a></li>
+                        </ul>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+        <!--header-end-->
+        <!--banner-starts-->
+        <div class="banner">
+            <div class="container menu">
+                <div class="banner-top">
+                    <div class="col-md-3 banner-left">
+                        <div class="logo">
+                            <a asp-controller="Home" asp-action="Index"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span><h1>Veterimax</h1></a>
+                        </div>
+                        <div class="navigation">
+                            <span class="menu"></span>
+                            <ul class="navig cl-effect-16">
+                                <li>
+                                    <a href="#"> Inicio</a>
+                                </li>
+                                <li>
+                                   <a onclick="toggleElement('suplidores')">Suplidores</a>
+                                     <ul id="suplidores">
+                                         <li class="hide">
+                                             <a asp-controller="Suplidor" asp-action="RegistroSuplidor" class="tab">Nuevo</a>
+                                         </li>
+                                        <li class="hide">
+                                           <a href="#" class="tab">Editar</a>
+                                        </li>
+                                     </ul>
+                                </li>
+                                <li>
+                                    <a onclick="toggleElement('compras')">Compras</a>
+                                    <ul id="compras">
+                                        <li class="hide">
+                                            <a asp-controller="Compra" asp-action="RegistroCompra" class="tab">Nueva orden</a>
+                                        </li>
+                                        <li class="hide">
+                                            <a href="#" class="tab">Editar orden</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a onclick="toggleElement('empleados')">Empleados</a>
+                                    <ul id="empleados">
+                                        <li class="hide">
+                                            <a asp-controller="Empleado" asp-action="RegistroEmpleado" class="tab">Nuevo</a>
+                                        </li>
+                                        <li class="hide">
+                                            <a href="" class="tab">Editar</a>
+                                        </li> 
+                                        <li class="hide">
+                                            <a href="" class="tab">Agregar tipo</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a onclick="toggleElement('usuarios')">Usuarios</a>
+                                    <ul id="usuarios">
+                                        <li class="hide">
+                                            <a asp-controller="Usuario" asp-action="RegistroUsuario" class="tab">Nuevo</a>
+                                        </li>
+                                        <li class="hide">
+                                            <a href="" class="tab">Editar</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a  onclick="toggleElement('modificaciones')">Modificaciones</a>
+                                    <ul id="modificaciones">
+                                        <li class="hide">
+                                            <a href="" class="tab">Factura</a>
+                                        </li>
+                                        <li class="hide">
+                                            <a href="" class="tab">Cliente</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a onclick="toggleElement('otros')">Otros</a>
+                                    <ul id="otros">
+                                        <li class="hide">
+                                            <a href="" class="tab">Agregar Tipo Cliente</a>
+                                        </li>
+                                        <li class="hide">
+                                            <a href="" class="tab">Agregar Tipo Producto</a>
+                                        </li>
+                                        <li class="hide">
+                                            <a href="" class="tab">Agregar Tipo Comprobante</a>
+                                        </li>
+                                        <li class="hide">
+                                            <a href="" class="tab">Agregar Tipo Procedimiento</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a  onclick="toggleElement('lotes')">Lotes de Productos</a>
+                                    <ul id="lotes">
+                                        <li class="hide"><a href="" class="tab">Editar</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a> Contacto</a>
+                                </li>
+                                <li>
+                                    <a onclick="toggleElement('productos')">Productos</a>
+                                    <ul id="productos">
+                                        <li class="hide"><a asp-controller="Producto" asp-action="RegistroProducto" class="tab">Nuevo</a></li>
+                                        <li class="hide"><a href="" class="tab">Editar</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a onclick="toggleElement('recepcion')">Recepcion de Compras</a>
+                                    <ul id="recepcion">
+                                        <li class="hide"><a href="#" class="tab">Registrar</a></li>
+                                        <li class="hide"><a href="" class="tab">Edita</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a onclick="toggleElement('ventas')">Ventas</a>
+                                    <ul id="ventas">
+                                        <li class="hide"><a href="Suplidores.html" class="tab">Nueva Venta</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a onclick="toggleElement('clientes')">Clientes</a>
+                                    <ul id="clientes">
+                                        <li class="hide"><a asp-controller="Cliente" asp-action="RegistroCliente" class="tab">Nuevo</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a>Ayudar</a>
+                                </li>
+                                <li>
+                                    <a onclick="toggleElement('pagosclientes')">Pagos de Clientes</a>
+                                    <ul id="pagosclientes">
+                                        <li class="hide"><a href="Suplidores.html" class="tab">Registrar</a></li>
+                                        <li class="hide"><a href="" class="tab">Editar</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a onclick="toggleElement('pagossup')">Pagos de Suplidores</a>
+                                    <ul id="pagossup">
+                                        <li class="hide"><a href="" class="tab">Registrar</a></li>
+                                        <li class="hide"><a href="" class="tab">Editar</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a>Ayudar</a>
+                                </li>
+                                <li>
+                                    <a onclick="toggleElement('mascotas')">Mascotas</a>
+                                    <ul id="mascotas">
+                                        <li class="hide"><a asp-controller="Mascota" asp-action="RegistroMascota" class="tab">Nueva</a></li>
+                                        <li class="hide"><a href="" class="tab">Editar</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a onclick="toggleElement('citas')">Citas</a>
+                                    <ul id="citas">
+                                        <li class="hide"><a href="" class="tab">Nuevo</a></li>
+                                        <li class="hide"><a href="" class="tab">Editar</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a onclick="toggleElement('procedimientos')">Procedimientos</a>
+                                    <ul id="procedimientos">
+                                        <li class="hide"><a href="" class="tab">Nuevo</a></li>
+                                        <li class="hide"><a href="" class="tab">Editar</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a onclick="toggleElement('listaConsultas')">Consultas</a>
+                                    <div id="listaConsultas">
+                                        <a id="admin" onclick="toggleElement('consultas')" class="hide tab">Administracion</a>
+                                        <ul id="consultas">
+                                            <li class="hide"><a href="" class="tab">Ver Ordenes de Compras</a></li>
+                                            <li class="hide"><a href="" class="tab">Ver Ventas</a></li>
+                                            <li class="hide"><a asp-controller="Empleado" asp-action="ConsultaEmpleado" class="hide tab">Ver Empleados</a></li>
+                                            <li class="hide"><a href="" class="tab">Ver Usuarios</a></li>
+                                            <li class="hide"><a href="" class="tab">Ver Suplidores</a></li>
+                                        </ul>
+
+                                        <a onclick="toggleElement('inventario')" class="hide tab">Inventario</a>
+                                        <ul id="inventario">
+                                            <li class="hide"><a asp-controller="Producto" asp-action="ConsultaProducto" class="tab">Ver Productos</a></li>
+                                            <li class="hide"><a href="" class="hide tab">Ver Lotes de Productos</a></li>
+                                            <li class="hide"><a href="" class="hide tab">Ver Recepcion de Compras</a></li>
+                                        </ul>
+
+                                        <a onclick="toggleElement('caja')" class="hide tab">Caja</a>
+                                        <ul id="caja">
+                                            <li class="hide"><a href="" class="tab">Ver Ventas del dia</a></li>
+                                            <li class="hide"><a href="" class="tab">Ver Clientes</a></li>
+                                        </ul>
+                                        <a onclick="toggleElement('veterinaria')" class="hide tab">Veterinaria</a>
+                                        <ul id="veterinaria">
+                                            <li class="hide"><a href="" class="tab">Ver Historial de Mascotas</a></li>
+                                            <li class="hide"><a href="" class="tab">Ver Citas</a></li>
+                                            <li class="hide"><a href="" class="tab">Ver Servicios</a></li>
+                                        </ul>
+                                    </div>
+                                    
+                                </li>
+                                <li>
+                                    <a>Ayudar</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <style>
+                .hide{
+                    display:none;
+                }
+                .menu{
+                    width:300px;
+                    position:absolute;
+                    left:0px;
+                    top:0px;
+                    z-index:1;
+                    white-space:nowrap;
+                    overflow:hidden;
+                }
+                .show{
+                    display:block;
+                }
+                li:hover{
+                    color:limegreen;
+                }
+                .tab{
+                    padding-left:5em;
+                    margin-left:5em;
+                }
+                #suplidores a:hover{
+                    background-color:limegreen;
+                }
+                #compras a:hover{
+                    background-color:limegreen;
+                }
+                #empleados a:hover {
+                    background-color: limegreen;
+                }
+                #usuarios a:hover {
+                    background-color: limegreen;
+                }
+                #modificaciones a:hover {
+                    background-color: limegreen;
+                }
+                #otros a:hover {
+                    background-color: limegreen;
+                }
+                #citas a:hover {
+                    background-color: limegreen;
+                }
+                #ventas a:hover {
+                    background-color: limegreen;
+                }
+                #clientes a:hover {
+                    background-color: limegreen;
+                }
+                #lotes a:hover {
+                    background-color: limegreen;
+                }
+                #mascotas a:hover {
+                    background-color: limegreen;
+                }
+                #productos a:hover {
+                    background-color: limegreen;
+                }
+                #recepcion a:hover {
+                    background-color: limegreen;
+                }
+                #consultas a:hover {
+                    background-color: green;
+                }
+                #admin a:hover {
+                    background-color: limegreen;
+                }
+                #caja a:hover {
+                    background-color: limegreen;
+                }
+                #veterinaria a:hover {
+                    background-color: limegreen;
+                }
+                #inventario a:hover {
+                    background-color: limegreen;
+                }
+            </style>
+            <script>
+                function toggleElement(id) {
+                    var element = document.getElementById(id);
+                    var nodes = element.childNodes;
+                    for (var i = 0; i < nodes.length; i++) {
+                        var el = nodes[i];
+                        if (el.className == "hide") {
+                            el.className = "show";
+                        }
+                        else {
+                            el.className = "hide";
+                        }
+                    }
+                }
+            </script>
+            <a href="#home" id="toTop" class="scroll" style="display: block;"> <span id="toTopHover" style="opacity: 1;"> </span></a>
+        </div>
+        <!--footer-end-->
+<div>
+    @RenderBody()
+</div>
+</body>
+</html>

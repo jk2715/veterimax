@@ -1,0 +1,407 @@
+﻿<!DOCTYPE HTML>
+@using Veterimax.Controllers
+
+<html>
+<head>
+    <title>Veterimax</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+    <link href="~/css/main.css" rel="stylesheet" />
+    <!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+    <!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+</head>
+<body>
+    @{
+        int usuario = UsuarioController.idus;
+        int tipo = UsuarioController.tipoUsuario;
+        string permiso = UsuarioController.permisos;
+    }
+    <div id="wrapper">
+        <!-- Wrapper -->
+        @if (permiso == "Nada")
+        {
+
+            <!-- Main -->
+            <div id="main">
+                <div class="inner">
+
+                    <!-- Header -->
+                    <header id="header">
+                        <a href="index.html" class="logo"><strong>Veterimax</strong>2018</a>
+                        <ul class="icons">
+                            <li><a href="https://www.facebook.com/agrocomercialDuvergeS.R.L/" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+                            <button type="button" class="btn btn-link">Iniciar secion</button>
+
+                        </ul>
+                    </header>
+
+                    <!-- Banner -->
+                    <section id="banner">
+                        <div class="content">
+                            <header>
+                                <h1>
+                                    Veterimax<br />
+                                    2018
+                                </h1>
+                                <p>Veterimax la facilidad a tu lado</p>
+                            </header>
+                            <p style="text-align:justify">“AGRO-COMERCIAL DUVERGE” es una empresa dedicada al comercio de productos y servicios de veterinaria de una gama bastante amplia. Actualmente, ellos realizan todos sus procesos de negocios y administrativos de manera análoga (manual) y, por lo tanto, esto genera varios inconvenientes en lo que se refiere a la seguridad, integridad y disponibilidad de sus datos más críticos, los cuales incluyen: ventas y compras del día, mes o año, gastos totales del mes, existencias actuales de mercancías, productos más vendidos y menos vendidos, cuentas de débito y crédito, informaciones sobre los empleados y clientes.</p>
+                            <ul class="actions">
+                                <li><a href="#" class="button big">Mas Informacion</a></li>
+                            </ul>
+                        </div>
+                        <span class="image object">
+                            <img src="~/images/bnr3.jpg" alt="" />
+                        </span>
+                    </section>
+
+                    <!-- Section -->
+                    <section>
+                        <header class="major">
+                            <h2>Por que Nosotros?</h2>
+                        </header>
+                        <div class="features">
+                            <article>
+                                <span class="icon fa-diamond"></span>
+                                <div class="content">
+                                    <h3>FÁCIL</h3>
+                                    <p>No hace falta saber de informática. Cualquiera puede aprender a manejar Veterimax en cuestión de minutos..</p>
+                                </div>
+                            </article>
+                            <article>
+                                <span class="icon fa-paper-plane"></span>
+                                <div class="content">
+                                    <h3>FIABLE</h3>
+                                    <p>Veterimax siempre está listo para funcionar y nunca te fallará.</p>
+                                </div>
+                            </article>
+                            <article>
+                                <span class="icon fa-rocket"></span>
+                                <div class="content">
+                                    <h3>RENTABLE</h3>
+                                    <p>Incrementa los beneficios. Con Ágora dispondrás de las herramientas necesarias para que puedas mejorar tus procesos de trabajo.</p>
+                                </div>
+                            </article>
+                            <article>
+                                <span class="icon fa-signal"></span>
+                                <div class="content">
+                                    <h3>PROFESIONAL</h3>
+                                    <p>Un extenso equipo de profesionales a tu servicio, para asesorarte y ayudarte.</p>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <!-- Section -->
+                    <section>
+                        <header class="major">
+                            <h2>veterimax</h2>
+                        </header>
+                        <div class="posts">
+                            <article>
+                                <a href="#" class="image"><img src="~/images/p8.jpg" alt="" /></a>
+                                <h3>Veterimax</h3>
+                                <p>La grandeza de una nación y su progreso moral puede ser juzgada por la forma en que sus animales son tratados.</p>
+                                <ul class="actions">
+                                    <li><a href="#" class="button">Mas</a></li>
+                                </ul>
+                            </article>
+                            <article>
+                                <a href="#" class="image"><img src="~/images/p3.jpg" alt="" /></a>
+                                <h3>Frase</h3>
+                                <p>Los animales son muy buenos amigos; no hacen preguntas, no critícan.</p>
+                                <ul class="actions">
+                                    <li><a href="#" class="button">Mas</a></li>
+                                </ul>
+                            </article>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+
+        }
+
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="inner">
+
+                <!-- Search -->
+                <section id="search" class="alt">
+                    <form method="post" action="#">
+                        <input type="text" name="query" id="query" placeholder="Buscar" />
+                    </form>
+                </section>
+
+                <!-- Menu -->
+                <nav id="menu">
+                    <header class="major">
+                        <h2>Menu</h2>
+                    </header>
+                    <ul>
+                        <li>
+                        <li>
+                            <a asp-controller="Home" asp-action="Index"> Inicio</a>
+                        </li>
+                        @if (tipo == 1 || permiso == "Administrador")
+                        {
+                            <li>
+                                <a asp-controller="Suplidor" asp-action="RegistroSuplidor">Suplidores</a>
+                            </li>
+                            <li>
+                                <a href="" class="opener">Compras</a>
+                                <ul>
+                                    <li>
+                                        <a asp-controller="Compra" asp-action="RegistroCompra">Nueva Orden</a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Compra" asp-action="VistaCompra">Ver Compras</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="" class="opener">Empleados</a>
+                                <ul>
+                                    <li>
+                                        <a asp-controller="Empleado" asp-action="RegistroEmpleado">Nuevo</a>
+                                    </li>
+                                    <li>
+                                        <a href="">Agregar tipo</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a asp-controller="Usuario" asp-action="RegistroUsuario">Usuarios</a>
+                                <ul>
+                                    <li>
+                                        <a href="">Nuevo</a>
+                                    </li>
+                                    <li>
+                                        <a href="">Editar</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                        }
+                        @if (permiso == "Administrador")
+                        {
+                            <li>
+                                <a href="" class="opener">Modificaciones</a>
+                                <ul>
+                                    <li>
+                                        <a href="">Factura</a>
+                                    </li>
+                                    <li>
+                                        <a href="RegistroCliente.html">Cliente</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#" class="opener">Otros</a>
+                                <ul>
+                                    <li>
+                                        <a href="">Agregar Tipo Cliente</a>
+                                    </li>
+                                    <li>
+                                        <a href="">Agregar Tipo Producto</a>
+                                    </li>
+                                    <li>
+                                        <a href="">Agregar Tipo Comprobante</a>
+                                    </li>
+                                    <li>
+                                        <a href="">Agregar Tipo Procedimiento</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                        }
+                        @if (tipo == 6 || permiso == "Administrador")
+                        {
+                            <li>
+                                <a href="" class="opener">Lotes de Productos</a>
+                                <ul>
+                                    <li><a href="">Editar</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#"> Contacto</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Producto" asp-action="RegistroProducto">Productos</a>
+                            </li>
+                            <li>
+                                <a href="#" class="opener">Recepcion de Compras</a>
+                                <ul>
+                                    <li><a asp-controller="Compra" asp-action="RecepcionCompra">Registrar</a></li>
+                                    <li><a href="#">Editar</a></li>
+                                </ul>
+                            </li>
+
+                        }
+                        @if (tipo == 4 || permiso == "Administrador")
+                        {
+                            <li>
+                                <a href="#" class="opener">Ventas</a>
+                                <ul>
+                                    <li><a asp-controller="Venta" asp-action="RegistroVenta">Nueva Venta</a></li>
+                                    <li><a href="http://desktop-pqruvp8/ReportServer/Pages/ReportViewer.aspx?%2fVentas+del+Dia&rs:Command=Render&rc:Parameters=false&IdUsuario=@UsuarioController.idus&Fecha=@DateTime.Now">Ver ventas del Dia</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a asp-controller="Cliente" asp-action="RegistroCliente">Clientes</a>
+                            </li>
+                        }
+
+                        @if (tipo == 5 || permiso == "Administrador")
+                        {
+                            <li>
+                                <a href="#" class="opener">Pagos de Clientes</a>
+                                <ul>
+                                    <li><a asp-controller="Pago" asp-action="PagoCliente">Registrar</a></li>
+                                    <li><a href="">Editar</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="" class="opener">Pagos de Suplidores</a>
+                                <ul>
+                                    <li><a href="">Registrar</a></li>
+                                    <li><a href="">Editar</a></li>
+                                </ul>
+                                <ul>
+                                    <li><a href="">Registrar</a></li>
+                                    <li><a href="">Editar</a></li>
+                                </ul>
+                            </li>
+
+                        }
+                        @if (tipo == 2 || permiso == "Administrador")
+                        {
+                            <li>
+                                <a asp-controller="Mascota" asp-action="RegistroMascota">Mascotas</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Mascota" asp-action="RegistroCita">Citas</a>
+                            </li>
+                            <li>
+                                <a href="" class="opener">Procedimientos</a>
+                                <ul>
+                                    <li><a href="">Nuevo</a></li>
+                                    <li><a href="">Editar</a></li>
+                                </ul>
+                            </li>
+
+                        }
+                        @if (tipo == 1)
+                        {
+                            <b>Consultas</b>
+                            <li>
+                                <ul>
+                                    <li><a href="">Ver Ordenes de Compras</a></li>
+                                    <li>
+                                        <a href="" class="opener">Ver Ventas</a>
+                                        <ul>
+                                            <li><a href="http://desktop-pqruvp8/ReportServer/Pages/ReportViewer.aspx?%2fVentas+del+Mes&rs:Command=Render">Por Mes</a></li>
+                                            <li><a href="http://desktop-pqruvp8/ReportServer/Pages/ReportViewer.aspx?%2fVentas+del+Dia&rs:Command=Render">Por Dia</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="">Ver Empleados</a></li>
+                                    <li><a href="">Ver Usuarios</a></li>
+                                    <li><a href="">Ver Suplidores</a></li>
+                                </ul>
+                            </li>
+
+                        }
+                        @if (tipo == 6)
+                        {
+                            <b>Consultas</b>
+                            <li>
+                                <ul>
+                                    <li><a href="">Ver Productos</a></li>
+                                    <li><a href="">Ver Lotes de Productos</a></li>
+                                    <li><a href="">Ver Recepcion de Compras</a></li>
+                                </ul>
+                            </li>
+
+                        }
+                        @if (tipo == 2)
+                        {
+                            <b>Consultas</b>
+                            <li>
+                                <a href="#" class="opener">Veterinaria</a>
+                                <ul>
+                                    <li><a href="#">Ver Historial de Mascotas</a></li>
+                                    <li><a href="#">Ver Citas</a></li>
+                                    <li><a href="#">Ver Servicios</a></li>
+                                </ul>
+                            </li>
+
+                        }
+                        @if (permiso == "Administrador")
+                        {
+                            <b>Consultas</b>
+                            <li>
+                                <a href="#" class="opener">Administracion</a>
+                                <ul>
+                                    <li><a href="">Ver Ordenes de Compras</a></li>
+                                    <li>
+                                        <a href="" class="opener">Ver Ventas</a>
+                                        <ul>
+                                            <li><a href="http://desktop-pqruvp8/ReportServer/Pages/ReportViewer.aspx?%2fVentas+del+Mes&rs:Command=Render">Por Mes</a></li>
+                                            <li><a href="http://desktop-pqruvp8/ReportServer/Pages/ReportViewer.aspx?%2fVentas+del+Dia&rs:Command=Render">Por Dia</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="">Ver Empleados</a></li>
+                                    <li><a href="">Ver Usuarios</a></li>
+                                    <li><a href="">Ver Suplidores</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="" class="opener">Inventario</a>
+                                <ul>
+                                    <li><a href="">Ver Productos</a></li>
+                                    <li><a href="">Ver Lotes de Productos</a></li>
+                                    <li><a href="">Ver Recepcion de Compras</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#" class="opener">Veterinaria</a>
+                                <ul>
+                                    <li><a href="#">Ver Historial de Mascotas</a></li>
+                                    <li><a href="#">Ver Citas</a></li>
+                                    <li><a href="#">Ver Servicios</a></li>
+                                </ul>
+                            </li>
+
+                        }
+
+
+                        <li>
+                            <a href="#">Ayuda</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+    </div>
+    <div>
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; 2018 - Veterimax</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+
+    <script src="~/js/skel.min.js"></script>
+    <script src="~/js/util.js"></script>
+    <!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+    <script src="~/js/main.js"></script>
+
+</body>
+</html>

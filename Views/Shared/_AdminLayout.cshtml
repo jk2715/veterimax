@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/css/menu.css" rel="stylesheet" />
+    <title>@ViewData["Title"] - Veterimax</title>
+</head>
+<body>
+    <div class="Supt">
+        <span><a asp-controller="Usuario" asp-action="InicioSesion">Iniciar sesion</a></span>
+    </div>
+    <div class="logo">
+        <img src="~/images/Logo.png" />
+    </div>
+    <div class="Menu">
+        <ul class="nav">
+            <li><a asp-controller="Home" asp-action="Index"> Inicio</a></li>
+            <li>
+                <a href="#"> Suplidores</a>
+                <ul>
+                    <li><a asp-controller="Suplidor" asp-action="RegistroSuplidor">Nuevo</a></li>
+                    <li><a href="">Editar</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="">Compras</a>
+                <ul>
+                    <li><a asp-controller="Compra" asp-action="RegistroCompra">Nueva orden</a></li>
+                    <li><a href="">Editar orden</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="">Empleados</a>
+                <ul>
+                    <li><a asp-controller="Empleado" asp-action="RegistroEmpleado">Nuevo</a></li>
+                    <li><a href="">Editar</a></li>
+                    <li><a href="">Agregar tipo</a></li>
+                </ul>
+            </li>
+            <li>
+                <a>Usuarios</a>
+                <ul>
+                    <li><a asp-controller="Usuario" asp-action="RegistroUsuario">Nuevo</a></li>
+                    <li><a href="">Editar</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="">Modificaciones</a>
+                <ul>
+                    <li><a href="">Factura</a></li>
+                    <li><a href="">Cliente</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Otros</a>
+                <ul>
+                    <li><a href="">Agregar Tipo Cliente</a></li>
+                    <li><a href="">Agregar Tipo Producto</a></li>
+                    <li><a href="">Agregar Tipo Comprobante</a></li>
+                    <li><a href="">Agregar Tipo Procedimiento</a></li>
+                </ul>
+            </li>
+            <li><a href="#"> Contacto</a></li>
+        </ul>
+    </div>
+    <div>
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; 2018 - Veterimax</p>
+        </footer>
+    </div>
+</body>
+@RenderSection("Scripts", required: false)
+</html>

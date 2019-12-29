@@ -1,0 +1,310 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <!DOCTYPE HTML>
+    @using Veterimax.Controllers
+    <html>
+    <head>
+        <title>Veterimax</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+        <link href="~/css/main.css" rel="stylesheet" />
+        <!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+        <!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+        <script src="~/js/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+        <script src="~/js/skel.min.js"></script>
+        <script src="~/js/util.js"></script>
+        <!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+        <script src="~/js/main.js"></script>
+    </head>
+    <body>
+        @{
+            int usuario = UsuarioController.idus;
+            int tipo = UsuarioController.tipoUsuario;
+            string permiso = UsuarioController.permisos;
+        }
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="inner">
+
+                <!-- Search -->
+                <section id="search" class="alt">
+                    <form method="post" action="#">
+                        <input type="text" name="query" id="query" placeholder="Buscar" />
+                    </form>
+                </section>
+
+                <!-- Menu -->
+                <nav id="menu">
+                    <header class="major">
+                        <h2>Menu</h2>
+                    </header>
+                    <ul>
+                        <li>
+                        <li>
+                            <a asp-controller="Home" asp-action="Index"> Inicio</a>
+                        </li>
+                        @if (tipo == 1 || permiso == "Administrador")
+                        {
+                            <li>
+                                <a asp-controller="Suplidor" asp-action="RegistroSuplidor">Suplidores</a>
+                            </li>
+                            <li>
+                                <a href="" class="opener">Compras</a>
+                                <ul>
+                                    <li>
+                                        <a asp-controller="Compra" asp-action="RegistroCompra">Nueva Orden</a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Compra" asp-action="VistaCompra">Ver Compras</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="" class="opener">Empleados</a>
+                                <ul>
+                                    <li>
+                                        <a asp-controller="Empleado" asp-action="RegistroEmpleado">Nuevo</a>
+                                    </li>
+                                    <li>
+                                        <a href="">Agregar tipo</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a asp-controller="Usuario" asp-action="RegistroUsuario">Usuarios</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Cliente" asp-action="RegistroCliente">Clientes</a>
+                            </li>
+
+                        }
+                        @if (permiso == "Administrador")
+                        {
+                            <li>
+                                <a href="#" class="opener">Mantenimiento</a>
+                                <ul>
+                                    <li>
+                                        <a href="">Agregar Tipo Cliente</a>
+                                    </li>
+                                    <li>
+                                        <a href="">Agregar Tipo Producto</a>
+                                    </li>
+                                    <li>
+                                        <a href="">Agregar Tipo Comprobante</a>
+                                    </li>
+                                    <li>
+                                        <a href="">Agregar Tipo Procedimiento</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                        }
+                        @if (tipo == 6 || permiso == "Administrador")
+                        {
+                            <li>
+                                <a asp-controller="Compra" asp-action="LotesProducto">Lotes de Productos</a>
+                            </li>
+                            <li>
+                                <a href="#"> Contacto</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Producto" asp-action="RegistroProducto">Productos</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Compra" asp-action="RecepcionCompra">Recepcion de Compras</a>
+                            </li>
+
+                        }
+                        @if (tipo == 4 || permiso == "Administrador")
+                        {
+                            <li>
+                                <a href="#" class="opener">Ventas</a>
+                                <ul>
+                                    <li><a asp-controller="Venta" asp-action="RegistroVenta">Nueva Venta</a></li>
+                                    <li><a href="http://desktop-pqruvp8/ReportServer/Pages/ReportViewer.aspx?%2fVentas+del+Dia&rs:Command=Render&rc:Parameters=false&IdUsuario=@UsuarioController.idus&Fecha=@DateTime.Now">Ver ventas del Dia</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a asp-controller="Cliente" asp-action="RegistroCliente">Clientes</a>
+                            </li>
+                        }
+
+                        @if (tipo == 5 || permiso == "Administrador")
+                        {
+                            <li>
+                                <a asp-controller="Pago" asp-action="PagoCliente">Pagos de Clientes</a>
+                            </li>
+                            <li>
+                                <a href="">Pagos de Suplidores</a>
+                            </li>
+
+                        }
+                        @if (tipo == 2 || permiso == "Administrador")
+                        {
+                            <li>
+                                <a asp-controller="Mascota" asp-action="RegistroMascota">Mascotas</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Mascota" asp-action="RegistroCita">Citas</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Mascota" asp-action="RegistroProcedimiento">Procedimientos</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Cliente" asp-action="RegistroCliente">Clientes</a>
+                            </li>
+
+
+                        }
+                        @if (tipo == 1 && permiso != "Administrador")
+                        {
+                            <li>
+                                <b>Reportes</b>
+                            </li>
+                            <li>
+                                <ul>
+                                    <li><a href="">Ver Ordenes de Compras</a></li>
+                                    <li>
+                                        <a href="" class="opener">Ver Ventas</a>
+                                        <ul>
+                                            <li><a href="http://desktop-pqruvp8/ReportServer/Pages/ReportViewer.aspx?%2fVentas+del+Mes&rs:Command=Render">Por Mes</a></li>
+                                            <li><a href="http://desktop-pqruvp8/ReportServer/Pages/ReportViewer.aspx?%2fVentas+del+Dia&rs:Command=Render">Por Dia</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="http://desktop-pqruvp8/ReportServer?%2fReporte+de+Empleados&rs:Command=Render">Ver Empleados</a></li>
+                                    <li><a href="http://desktop-pqruvp8/ReportServer?%2fClientesDataset&rs:Command=GetDataSetDefinition">Ver Clientes</a></li>
+                                    <li><a href="">Ver Usuarios</a></li>
+                                    <li><a href="">Ver Suplidores</a></li>
+                                </ul>
+                            </li>
+
+                        }
+                        @if (tipo == 6 && permiso != "Administrador")
+                        {
+                            <li>
+                                <b>Reportes</b>
+                            </li>
+                            <li>
+                                <ul>
+                                    <li><a href="http://desktop-pqruvp8/ReportServer?%2fReporte+de+Productos&rs:Command=Render">Ver Productos</a></li>
+                                    <li><a href="">Ver Lotes de Productos</a></li>
+                                    <li><a href="">Ver Recepcion de Compras</a></li>
+                                </ul>
+                            </li>
+
+                        }
+                        @if (tipo == 6 && permiso != "Administrador")
+                        {
+                            <li>
+                                <b>Reportes</b>
+                            </li>
+                            <li>
+                                <a href="#" class="opener">Contabilidad</a>
+                                <ul>
+                                    <li><a href="http://desktop-pqruvp8/ReportServer?%2fEstado+de+Cuentas&rs:Command=Render">Estado de Cuentas</a></li>
+                                </ul>
+                            </li>
+
+                        }
+                        @if (tipo == 2 && permiso != "Administrador")
+                        {
+                            <li>
+                                <b>Reportes</b>
+                            </li>
+                            <li>
+                                <a href="#" class="opener">Veterinaria</a>
+                                <ul>
+                                    <li><a href="http://desktop-pqruvp8/ReportServer/Pages/ReportViewer.aspx?%2fHisotrial+Medico&rs:Command=Render">Historial de Mascotas</a></li>
+                                    <li><a href="#">Ver Citas</a></li>
+                                    <li><a href="#">Ver Servicios</a></li>
+                                </ul>
+                            </li>
+
+                        }
+                        @if (permiso == "Administrador")
+                        {
+                            <li>
+                                <br />
+                                <b>Reportes</b>
+                            </li>
+                            <br />
+                            <li>
+                                <a href="#" class="opener">Ventas</a>
+                                <ul>
+                                    <li>
+                                        <a href="http://desktop-pqruvp8/ReportServer/Pages/ReportViewer.aspx?%2fReporte+de+Ventas&rs:Command=Render">General</a>
+                                    </li>
+                                    <li>
+                                        <a href="http://desktop-pqruvp8/ReportServer/Pages/ReportViewer.aspx?%2fVentas+del+Dia&rs:Command=Render">Detalles</a>
+                                    </li>
+                                    <li>
+                                        <a href="http://desktop-pqruvp8/ReportServer/Pages/ReportViewer.aspx?%2fVentasPorTrimestre&rs:Command=Render">Por Productos</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#" class="opener">Compras</a>
+                                <ul>
+                                    <li><a href="">Ordenes de Compras</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#" class="opener">Administracion</a>
+                                <ul>
+                                    <li><a href="http://desktop-pqruvp8/ReportServer?%2fReporte+de+Empleados&rs:Command=Render">Empleados</a></li>
+                                    <li><a href="http://desktop-pqruvp8/ReportServer?%2fClientesDataset&rs:Command=GetDataSetDefinition">Clientes</a></li>
+                                    <li><a href="">Usuarios</a></li>
+                                    <li><a href="">Suplidores</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="" class="opener">Inventario</a>
+                                <ul>
+                                    <li><a href="http://desktop-pqruvp8/ReportServer?%2fReporte+de+Productos&rs:Command=Render">Ver Productos</a></li>
+                                    <li><a href="">Ver Lotes de Productos</a></li>
+                                    <li><a href="">Ver Recepcion de Compras</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#" class="opener">Veterinaria</a>
+                                <ul>
+                                    <li><a href="http://desktop-pqruvp8/ReportServer/Pages/ReportViewer.aspx?%2fHisotrial+Medico&rs:Command=Render">Historial de Mascotas</a></li>
+                                    <li><a href="#">Citas</a></li>
+                                    <li><a href="#">Servicios</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#" class="opener">Contabilidad</a>
+                                <ul>
+                                    <li><a href="http://desktop-pqruvp8/ReportServer?%2fEstado+de+Cuentas&rs:Command=Render">Estado de Cuentas</a></li>
+                                </ul>
+                            </li>
+
+                        }
+
+
+                        <li>
+                            <a href="#">Ayuda</a>
+                        </li>
+                        <li>
+                            <a asp-controller="Usuario" asp-action="Login">Cerrar Sesion</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        @RenderBody()
+    </body>
+</html>
+</body>
+</html>
