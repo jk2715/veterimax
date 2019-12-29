@@ -1,0 +1,394 @@
+﻿
+@{
+    ViewData["Title"] = "RegistroProducto";
+}
+@model Veterimax.Models.Producto
+@using Veterimax.Controllers
+@using System.Data
+@{ 
+    ViewBag.Title = "ReigstroProducto";
+}
+<html>
+<head>
+    <title>Registro de Producto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/formstyle.css">
+    <script type="text/javascript" src="~/js/Validacion.js"></script>
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script>
+        function Editar() {
+            var count = -1;
+            document.getElementById('evalHidden').value = "true";
+            document.getElementById('titulo').innerHTML = "Edicion de Producto";
+            var table = document.getElementById('table1');
+            var check = table.getElementsByTagName("input");
+            for (var i = 0; i < check.length; i++) {
+                if (check[i].checked) {
+                    if (count > -1) {
+                        count = -1;
+                        document.getElementById("alertaExito").className = "alert alert-warning";
+                        document.getElementById("alertaExito").innerHTML = "No puede seleccionar mas de una fila para entrar en modo edicion.";
+                        break;
+                    }
+                    count = i;
+                }
+            }
+            if (count > -1) {
+                var row = table.rows[count];
+                var dd = document.getElementById('categorias');
+                for (var i = 0; i < dd.options.length; i++) {
+                    if (dd.options[i].text == row.cells[2].innerHTML) {
+                        dd.selectedIndex = i;
+                        break;
+                    }
+                }
+                document.getElementById('descripcion').value = row.cells[3].innerHTML;
+                document.getElementById('descripcion').addEventListener("input", nombre_Input.bind(null, 'descripcion'));
+                document.getElementById('unidad').value = row.cells[5].innerHTML;
+                document.getElementById('costo').value = row.cells[6].innerHTML;
+                document.getElementById('costo').addEventListener("input", Calcular_Precio);
+                document.getElementById('ganancia').value = row.cells[7].innerHTML;
+                document.getElementById('ganancia').addEventListener("input", Calcular_Precio);
+                document.getElementById('precioVenta').innerHTML = row.cells[8].innerHTML;
+                document.getElementById('puntoReorden').value = row.cells[11].innerHTML;
+                document.getElementById('puntoReorden').addEventListener("input", cantidad_Input.bind(null, 'puntoReorden'));
+                document.getElementById('maximo').value = row.cells[12].innerHTML;
+                document.getElementById('maximo').addEventListener("input", cantidad_Input.bind(null, 'maximo'));
+                document.getElementById("codigo").value = row.cells[1].innerHTML;
+                document.getElementById("codigo").readOnly = true;
+                $("#myModal").modal("show");
+            }
+            else {
+                document.getElementById("alertaExito").className = "alert alert-warning";
+                document.getElementById("alertaExito").innerHTML = "Debe seleccionar una fila para entrar en modo de edicion.";
+            }
+        }
+        function Eliminar() {
+            var listaEliminar = [];
+            var listaProductos = [];
+            document.getElementById('evalHidden').value = "eliminar";
+            var table = document.getElementById('table1');
+            var check = table.getElementsByTagName("input");
+            for (var i = 0; i < check.length; i++) {
+                if (check[i].checked) {
+                    listaEliminar.push(i);
+                }
+            }
+            if (listaEliminar.length > 0) {
+                for (var i = 0; i < listaEliminar.length; i++) {
+                    var row = table.rows[listaEliminar[i]];
+                    listaProductos.push(row.cells[1].textContent);
+                }
+                document.getElementById("listaProductos").value = listaProductos.toString();
+                return true;
+            }
+            else {
+                document.getElementById("alertaExito").className = "alert alert-warning";
+                document.getElementById("alertaExito").innerHTML = "Debe seleccionar al menos una fila para eliminar";
+                return false;
+            }
+        }
+        function Calcular_Precio() {
+            cantidad_Input('costo');
+            cantidad_Input('ganancia');
+            var costo = document.getElementById('costo');
+            var margen = document.getElementById('ganancia');
+            if (costo.className.includes('marcar verde') && margen.className.includes('marcar verde')) {
+                var precio = document.getElementById('precioVenta');
+                var x = parseFloat(costo.value) * parseFloat(margen.value);
+                x = parseFloat(costo.value) + x;
+                precio.innerHTML = "RD$" + x.toFixed(2);
+            }
+        }
+        function Pasar_Precio() {
+            var label = document.getElementById('precioVenta');
+            var st = label.innerHTML;
+            st = st.replace("RD$", "");
+            document.getElementById('precioHidden').value = st;
+            return validarFormulario('myModal')
+        }
+        $(document).ready(function () {
+            $("#modalbtn").click(function () {
+                $("#myModal").modal("show")
+            });
+        });
+        $(document).ready(function () {
+            $("#myModal").on("hidden.bs.modal", function () {
+                window.location.href = "@Url.Action("RegistroProducto", "Producto")";
+            });
+        });
+    </script>
+    <style>
+        #sidebar {
+            float: left;
+        }
+
+        #wrapper {
+            width: 75%;
+        }
+
+        .main {
+            width: 95%;
+        }
+    </style>
+</head>
+<body>
+    @{
+        Layout = "_LayoutPruebs";
+    }
+    @{
+        var cc = new ProductoController();
+        var dt = cc.GetProductos();
+        int i = 0;
+    }
+    @using (Html.BeginForm("EliminarProducto", "Producto", FormMethod.Post))
+    {
+        <div id="wrapper">
+            <div class="main">
+                <div class="inner">
+                    <section style="">
+                        <div id="alertaExito"></div>
+                        <input type="button" id="modalbtn" class="btn btn-success btn-size" value="Agregar" />
+                        <input type="button" class="btn btn-primary btn-size" style="margin-left:1em;" id="editar" value="Editar" onclick="Editar()" />
+                        <input type="submit" class="btn btn-primary btn-size" style="margin-left:1em;" id="eliminar" value="Eliminar" onclick="return Eliminar()" />
+                        <input type="hidden" id="listaProductos" name="listaProductos" value="0" />
+                        <input type="text" id="buscar" placeholder="Filtrar" style="width:30%; margin-left:20em; margin-bottom:1em;" />
+                        <table border="1" class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">
+                                        Acciones
+                                    </th>
+                                    <th scope="col">
+                                        Codigo
+                                    </th>
+                                    <th scope="col">
+                                        Categoria
+                                    </th>
+                                    <th scope="col">
+                                        Descripcion
+                                    </th>
+                                    <th scope="col">
+                                        Cantidad
+                                    </th>
+                                    <th scope="col">
+                                        Unidad
+                                    </th>
+                                    <th scope="col">
+                                        Costo
+                                    </th>
+                                    <th scope="col">
+                                        Margen de Ganancia
+                                    </th>
+                                    <th scope="col">
+                                        Precio de Venta
+                                    </th>
+                                    <th scope="col">
+                                        Servicio
+                                    </th>
+                                    <th scope="col">
+                                        Estado
+                                    </th>
+                                    <th scope="col">
+                                        Punto de Reorden
+                                    </th>
+                                    <th scope="col">
+                                        Maximo
+                                    </th>
+                                    <th scope="col">
+                                        Fecha de Registro
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="table1" style="color: black;">
+                                @foreach (DataRow x in dt.Rows)
+                                {
+                                    string id = i.ToString();
+                                    int rownum = i;
+                                    <tr>
+                                        <td><input type="checkbox" /></td>
+                                        <td>@x["IdProducto"].ToString()</td>
+                                        <td>@x["Categoria"].ToString()</td>
+                                        <td>@x["Descripcion"].ToString()</td>
+                                        <td>@x["Cantidad"].ToString()</td>
+                                        <td>@x["Unidades"].ToString()</td>
+                                        <td>@x["Costo"].ToString()</td>
+                                        <td>@x["MargenGanancia"].ToString()</td>
+                                        <td>@x["Precio de venta"].ToString()</td>
+                                        <td>@x["Servicio"].ToString()</td>
+                                        <td>@x["Estado"].ToString()</td>
+                                        <td>@x["PuntoReorden"].ToString()</td>
+                                        <td>@x["Maximo"].ToString()</td>
+                                        <td>@x["FechaRegistro"].ToString()</td>
+                                    </tr>
+                                    i++;
+                                }
+                            </tbody>
+                        </table>
+                    </section>
+                </div>
+            </div>
+
+        </div>
+    }
+
+    @using (Html.BeginForm("RegistroProducto", "Producto", FormMethod.Post))
+    {
+        var pc = new ProductoController();
+        var categoriaDt = pc.GetTiposProductos();
+        List<SelectListItem> tipoDropList = new List<SelectListItem>();
+        foreach (DataRow x in categoriaDt.Rows)
+        {
+            tipoDropList.Add(new SelectListItem { Text = x["Categoria"].ToString(), Value = x["IdTipoProducto"].ToString() });
+        }
+        <div class="modal" tabindex="-1" role="dialog" id="myModal">
+            <div class="modal-dialog" role="document" id="modalD">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b id="titulo">Nuevo Producto</b></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="alertaError">
+                    </div>
+                    <div class="modal-body modal-padding" id="modalBody">
+                        <div class="row">
+                            <div class="col-half">
+                                <h6>Codigo</h6>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.IdProducto, new { @placeholder = "Codigo", @style = "color:black;", @id = "codigo" })
+                                </div>
+                            </div>
+                            <div class="col-half">
+                                <h6>Categoria</h6>
+                                <div class="input-group">
+                                    @Html.DropDownListFor(m => m.IdTipoProducto, tipoDropList, "--Seleccionar", new { @id = "categorias", @class = "dropSize", @style = "padding:0em; padding-left:1em;color:black;" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h6>Descripcion</h6>
+                            <div class="input-group">
+                                @Html.TextBoxFor(m => m.Descripcion, new { @placeholder = "Descripcion", @id = "descripcion", @style = "color:black;", @oninput = "nombre_Input('descripcion')" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-half">
+                                <h6>Unidad</h6>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.Unidades, new { @placeholder = "Unidades", @id = "unidad", @style = "color:black;" })
+                                </div>
+                            </div>
+                            <div class="col-half">
+                                <h6>Costo</h6>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.Costo, new { @placeholder = "Costo", @id = "costo", @oninput = "Calcular_Precio()", @style = "color:black;" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-half">
+                                <h6>Margen de Ganancia</h6>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.Ganancia, new { @placeholder = "Margen Ganancia", @id = "ganancia", oninput = "Calcular_Precio()", @style = "color:black;" })
+                                </div>
+                            </div>
+                            <div class="col-half">
+                                <h6>Precio de Venta</h6>
+                                <div class="input-group">
+                                    @Html.Label("precioVenta", "RD$0.00", new { @id = "precioVenta" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-half">
+                                <h6>Maximo</h6>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.Maximo, new { @placeholder = "Maximo", @id = "maximo", @style = "color:black;", @oninput = "cantidad_Input('maximo')" })
+                                </div>
+                            </div>
+                            <div class="col-half">
+                                <h6>Punto de Reorden</h6>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.PuntoReorden, new { @placeholder = "Punto de Reorden", @id = "puntoReorden", @oninput = "cantidad_Input('puntoReorden')", @style = "color:black;" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group">
+                                @Html.CheckBoxFor(m => m.Servicio, new { @id = "servicio" })
+                                <label for="servicio">Es Servicio</label>
+                            </div>
+                        </div>
+                        <input type="hidden" id="evalHidden" name="evalHidden" value="false" />
+                        <input type="submit" value="Guardar" onclick="return Pasar_Precio()" style="background-color:#7ed321; color:white;" />
+                        <input type="hidden" id="precioHidden" name="precioHidden" value="0" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (ViewBag.Message == "Entrada ya existe")
+    {
+        <script>
+            window.onload = function () {
+                $("#myModal").modal("show");
+                document.getElementById("alertaError").className = "alert alert-danger";
+                document.getElementById("alertaError").innerHTML = "Ya existe un producto con el codigo ingresado en la base de datos.";
+            }
+            window.onclick = function () {
+                document.getElementById("alertaExito").className = "";
+                document.getElementById("alertaExito").innerHTML = "";
+            }
+        </script>
+
+    }
+    @if (ViewBag.Message == "Exito")
+    {
+        <script>
+            window.onload = function () {
+                document.getElementById("alertaExito").className = "alert alert-success";
+                document.getElementById("alertaExito").innerHTML = "Ha registrado un producto con exito!";
+            }
+            window.onclick = function () {
+                document.getElementById("alertaExito").className = "";
+                document.getElementById("alertaExito").innerHTML = "";
+            }
+        </script>
+
+    }
+    <style>
+        .modal-padding {
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+        .btn-size {
+            width: 9%;
+        }
+
+        body {
+            background-color: white;
+        }
+
+        .dropSize {
+            width: 100%;
+        }
+
+        h6 {
+            color: green;
+        }
+
+        input {
+            color: black;
+        }
+    </style>
+</body>
+</html>
+
+

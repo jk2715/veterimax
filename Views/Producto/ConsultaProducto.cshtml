@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewData["Title"] = "ConsultaProducto";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@model Veterimax.Models.Producto
+@{ 
+    ViewBag.Title = "ConsultaProducto";
+}
+@using System.Data
+@using Veterimax.Controllers
+<html>
+    <head>
+        <title>Consulta de Productos</title>
+    </head>
+    <body>
+        <h2><b>Lista de Productos</b></h2>
+        <table border="1">
+            <tr>
+                <th>
+                    Codigo
+                </th>
+                <th>
+                    Categoria
+                </th>
+                <th>
+                    Descripcion
+                </th>
+                <th>
+                    Existencias
+                </th>
+                <th>
+                    Precio
+                </th>
+                <th>
+                    Punto de Reorden
+                </th>
+            </tr>
+                @foreach (DataRow x in ProductoController.dt.Rows)
+                {
+                <tr>
+                    <td>
+                        @x["IdProducto"].ToString()
+                    </td>
+                    <td>
+                        @x["Categoria"].ToString()
+                    </td>
+                    <td>
+                        @x["Descripcion"].ToString()
+                    </td>
+                    <td>
+                        @x["Cantidad"].ToString()
+                    </td>
+                    <td>
+                        @x["Precio de Venta"].ToString()
+                    </td>
+                    <td>
+                        @x["PuntoReorden"].ToString()
+                    </td>
+                </tr>
+
+            }
+        </table>
+    </body>
+</html>
+
+
