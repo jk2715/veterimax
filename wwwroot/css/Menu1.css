@@ -1,0 +1,122 @@
+﻿body {
+    background: #0b2027;
+    font-family: 'Roboto', sans-serif;
+    line-height: 18px;
+}
+
+.a {
+    text-decoration: none;
+    color: #494949;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.btn-menu {
+    display: none;
+    padding: 20px;
+    background: #0d2c44;
+    color: #494949;
+}
+
+    .btn-menu .Icono {
+        float: right;
+    }
+
+.Contenedor-menu {
+    right:49px;
+    width: 20%;
+    min-width: 300px;
+    margin: 50px;
+    display: inline-block;
+    font-family: 'Roboto', sans-serif;
+    line-height: 18px;
+    position: relative;
+    top: 147px;
+}
+
+    .Contenedor-menu .menu1 {
+        width: 100%;
+    }
+
+    .Contenedor-menu ul {
+        list-style: none;
+    }
+
+    .Contenedor-menu .menu1 li a {
+        color: #494949;
+        display: block;
+        padding: 15px 20px;
+        background: #e9e9e9;
+    }
+
+        .Contenedor-menu .menu1 li a:hover {
+            background: #1a95d5;
+            color: #fff;
+        }
+
+    .Contenedor-menu .menu1 .Icono {
+        font-size: 12px;
+        line-height: 18px;
+    }
+
+        .Contenedor-menu .menu1 .Icono.izquierda {
+            float: left;
+            margin-right: 10px;
+        }
+
+        .Contenedor-menu .menu1 .Icono.derecha {
+            float: right;
+            margin-left: 10px;
+        }
+
+    .Contenedor-menu .menu1 ul {
+        display: none;
+    }
+
+        .Contenedor-menu .menu1 ul li a {
+            background: #424242;
+            color: #e9e9e9;
+        }
+
+
+@media screen and (max-width: 450px) {
+    body {
+        padding-top: 80px;
+    }
+
+    .Contenedor-menu {
+        margin: 0;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .btn-menu {
+        display: block;
+    }
+
+    .Contenedor-menu .menu1 {
+        display: none;
+ 
+        
+        
+        }
+
+
+    .logo{
+        position:relative;
+        top:40px;
+
+
+
+
+
+    }
+}

@@ -1,0 +1,128 @@
+﻿html, body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 15px;
+    z-index:1;
+}
+
+.Supt {
+    text-align: right;
+    padding: 5px 17px;
+}
+
+    .Supt span {
+        font-size: 17px;
+    }
+
+.logo {
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+}
+
+    .logo img {
+        width: 180px;
+    }
+
+.Menu {
+    width: 100%;
+}
+
+ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    display: block;
+}
+
+.nav > li {
+    float: left;
+    padding: 10px 20px;
+    /* background: #444; */
+    color: black;
+    font-size: 18px;
+}
+
+    .nav > li:hover {
+        background: #ccc;
+    }
+
+        .nav > li:hover a {
+            color: black;
+        }
+
+.nav {
+    display: table;
+    margin: auto;
+}
+
+    .nav a {
+        color: black;
+        text-decoration: none;
+    }
+
+        .nav a:hover {
+            color: black;
+        }
+
+    .nav li ul {
+        display: none;
+        position: absolute;
+        min-width: 140px;
+        padding: 5px 0;
+        margin: 12px -25px;
+        background: #fff;
+    }
+
+    .nav li:hover > ul {
+        display: block;
+    }
+
+    .nav li ul li {
+        position: relative;
+        padding: 10px 20px;
+    }
+
+        .nav li ul li ul {
+            right: -140px;
+            top: 0px;
+        }
+
+.Pag {
+    width: 100%;
+    margin: 59px 0;
+}
+
+.Post {
+    width: 1000px;
+    height: 422px;
+    margin: auto;
+    overflow: hidden;
+}
+
+    .Post img {
+        width: 1000px;
+    }
+
+.Cont {
+    width: 1000px;
+    margin: auto;
+    padding: 40px 0;
+    overflow: hidden;
+}
+
+.cont1 {
+    background: #ccc;
+    width: 480px;
+    height: 400px;
+    float: left;
+}
+
+.cont2 {
+    width: 430px;
+    height: 260px;
+    float: left;
+    margin-left: 90px;
+    background: #ccc;
+}

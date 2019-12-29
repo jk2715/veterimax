@@ -1,0 +1,9 @@
+﻿.marcar.rojo {
+    border-style: solid;
+    border-color: red;
+}
+
+.marcar.verde {
+    border-style: solid;
+    border-color: limegreen;
+}
