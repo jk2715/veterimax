@@ -1,0 +1,287 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Veterimax.Models.Suplidor
+@using Veterimax.Controllers
+@using System.Data
+@page
+<html>
+<head>
+    <title>
+        Registro de Suplidores
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="~/css/formstyle.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <script type="text/javascript" src="~/js/Validacion.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    
+    <style>
+        #sidebar {
+            float: left;
+        }
+
+        #wrapper {
+            width: 75%;
+        }
+    </style>
+</head>
+<body>
+    @{
+        Layout = "_LayoutPruebs";
+    }
+    @{
+        var sup = new SuplidorController();
+        var dt = sup.GetSuplidores();
+    }
+    @using (Html.BeginForm("RegistroSuplidor", "Suplidor", FormMethod.Post))
+    {
+
+        <div id="wrapper">
+
+            <div class="main">
+                <div class="inner">
+                    <section style="margin-left:4em;">
+                        <div id="alertaExito"></div>
+                        <input type="button" id="modalbtn" class="btn btn-success btn-size" style="padding:0em;" value="Agregar" />
+                        <input type="button" class="btn btn-primary btn-size" style="margin-left:1em;" id="editar" value="Editar" onclick="Editar()" />
+                        <input type="submit" class="btn btn-primary btn-size" style="margin-left:1em;padding:0em;" id="eliminar" value="Eliminar" onclick="return Eliminar()" />
+                        <input type="hidden" id="listaRNC" name="listaRNC" value="0" />
+                        <input type="text" id="buscar" placeholder="Filtrar" style="width:30%; margin-left:30em; margin-bottom:1em;" />
+                        <div class="container">
+                            <div class="col-md-12">
+                                <table border="1" class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">
+                                                Acciones
+                                            </th>
+                                            <th scope="col">
+                                                Empresa
+                                            </th>
+                                            <th scope="col">
+                                                Representante de Ventas
+                                            </th>
+                                            <th scope="col">
+                                                Direccion
+                                            </th>
+                                            <th scope="col">
+                                                Telefono
+                                            </th>
+                                            <th scope="col">
+                                                Correo Electronico
+                                            </th>
+                                            <th scope="col">
+                                                RNC
+                                            </th>
+                                            <th scope="col">
+                                                Fecha de Registro
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table1">
+                                        @foreach (DataRow x in dt.Rows)
+                                        {
+                                            <tr>
+                                                <td><input type="checkbox" /></td>
+                                                <td>@x["Empresa"].ToString()</td>
+                                                <td>@x["RepresentanteDeVenta"].ToString()</td>
+                                                <td>@x["Direccion"].ToString()</td>
+                                                <td>@x["Telefono"].ToString()</td>
+                                                <td>@x["CorreoElectronico"].ToString()</td>
+                                                <td>@x["RNC"].ToString()</td>
+                                                <td>@x["FechaRegistro"].ToString()</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+        </div>
+    }
+
+    @using (Html.BeginForm("RegistroSuplidor", "Suplidor", FormMethod.Post))
+    {
+        <div class="modal" tabindex="-1" role="dialog" id="myModal">
+            <div class="modal-dialog" role="document" id="modalD">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b id="titulo">Nuevo Suplidor</b></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="alertaError">
+                    </div>
+                    <div class="modal-body modal-padding" id="modalBody">
+                        <div class="row">
+                            <h6 style="color:lawngreen;">RNC</h6>
+                            <div class="input-group">
+                                @Html.TextBoxFor(m => m.RNC, new { @placeholder = "RNC", @id = "rnc" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h6 style="color:lawngreen;">Empresa</h6>
+                            <div class="input-group">
+                                @Html.TextBoxFor(m => m.Empresa, new { @placeholder = "Empresa", @id = "empresa", @oninput = "nombre_Input('empresa')" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-half">
+                                <h6 style="color:lawngreen;">Representante de Ventas</h6>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.RepVentas, new { @placeholder = "Representante", @id = "repVentas" })
+                                </div>
+                            </div>
+                            <div class="col-half">
+                                <h6 style="color:lawngreen;">Telefono</h6>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.Telefono, new { @placeholder = "Telefono", @id = "telefono", @oninput = "telefono_Input('telefono')" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h6 style="color:lawngreen;">Direccion</h6>
+                            <div class="input-group">
+                                @Html.TextBoxFor(m => m.Direccion, new { @placeholder = "Direccion", @id = "direccion" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h6 style="color:lawngreen;">Correo Electronico</h6>
+                            <div class="input-group">
+                                @Html.TextBoxFor(m => m.CorreoElectronico, new { @placeholder = "ejemplo@gmail.com", @id = "correo", @oninput = "email_Input('correo')" })
+                            </div>
+                        </div>
+                        <input type="submit" value="Guardar" onclick="return validarFormulario('myModal')" style="background-color:#7ed321; color:white;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="evalHidden" name="evalHidden" value="false" />
+    }
+    @if (SuplidorController.error == true)
+    {
+        SuplidorController.error = false;
+        <script>
+            window.onload = function () {
+                $("#myModal").modal("show");
+                document.getElementById("alertaError").className = "alert alert-danger";
+                document.getElementById("alertaError").innerHTML = "Ya existe una empresa con el RNC ingresado en la base de datos.";
+            }
+            window.onclick = function () {
+                document.getElementById("alertaExito").className = "";
+                document.getElementById("alertaExito").innerHTML = "";
+            }
+        </script>
+
+    }
+    @if (ViewBag.Message == "Exito")
+    {
+        <script>
+            window.onload = function () {
+                document.getElementById("alertaExito").className = "alert alert-success";
+                document.getElementById("alertaExito").innerHTML = "Ha registrado el suplidor con exito!";
+            }
+            window.onclick = function () {
+                document.getElementById("alertaExito").className = "";
+                document.getElementById("alertaExito").innerHTML = "";
+            }
+        </script>
+
+    }
+    <script>
+        function Editar() {
+            var count = -1;
+            document.getElementById('titulo').innerHTML = "Edicion de Suplidor";
+            document.getElementById('evalHidden').value = "true";
+            var table = document.getElementById('table1');
+            var check = table.getElementsByTagName("input");
+            for (var i = 0; i < check.length; i++) {
+                if (check[i].checked) {
+                    if (count > -1) {
+                        count = -1;
+                        document.getElementById("alertaExito").className = "alert alert-warning";
+                        document.getElementById("alertaExito").innerHTML = "No puede seleccionar mas de una fila para entrar en modo edicion.";
+                        break;
+                    }
+                    count = i;
+                }
+            }
+            if (count > -1) {
+                var row = table.rows[count];
+                document.getElementById('empresa').value = row.cells[1].textContent;
+                document.getElementById('empresa').addEventListener("input", nombre_Input.bind(null, 'empresa'));
+                document.getElementById('repVentas').value = row.cells[2].textContent;
+                document.getElementById('telefono').value = row.cells[4].textContent
+                document.getElementById('telefono').addEventListener("input", telefono_Input.bind(null, 'telefono'));
+                document.getElementById('direccion').value = row.cells[3].textContent;
+                document.getElementById('correo').value = row.cells[5].textContent;
+                document.getElementById('correo').addEventListener("input", email_Input.bind(null, 'correo'));
+                document.getElementById('rnc').value = row.cells[6].textContent;
+                document.getElementById('rnc').readOnly = true;
+                $("#myModal").modal("show");
+            }
+            else {
+                document.getElementById("alertaExito").className = "alert alert-warning";
+                document.getElementById("alertaExito").innerHTML = "Debe seleccionar una fila para entrar en modo de edicion.";
+            }
+        }
+
+        function Eliminar() {
+            var listaEliminar = [];
+            var listaRNC = [];
+            document.getElementById('evalHidden').value = "eliminar";
+            var table = document.getElementById('table1');
+            var check = table.getElementsByTagName("input");
+            for (var i = 0; i < check.length; i++) {
+                if (check[i].checked) {
+                    listaEliminar.push(i);
+                }
+            }
+            if (listaEliminar.length > 0) {
+                for (var i = 0; i < listaEliminar.length; i++) {
+                    var row = table.rows[listaEliminar[i]];
+                    listaRNC.push(row.cells[6].textContent);
+                }
+                document.getElementById("listaRNC").value = listaRNC.toString();
+                return true;
+            }
+            else {
+                document.getElementById("alertaExito").className = "alert alert-warning";
+                document.getElementById("alertaExito").innerHTML = "Debe seleccionar al menos una fila para eliminar";
+                return false;
+            }
+        }
+        $(document).ready(function () {
+            $("#modalbtn").click(function () {
+                $("#myModal").modal("show")
+            });
+        });
+        $(document).ready(function () {
+            $("#myModal").on("hidden.bs.modal", function () {
+                window.location.href = "@Url.Action("RegistroSuplidor", "Suplidor")";
+            });
+        });
+    </script>
+    <style>
+        .modal-padding {
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+
+        .btn-size {
+            width: 9%;
+            position: relative;
+            top: 50px;
+            left: 100px;
+        }
+    </style>
+</body>
+</html>

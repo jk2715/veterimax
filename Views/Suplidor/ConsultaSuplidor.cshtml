@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "ConsultaSuplidor";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<!DOCTYPE html>
+
+@using System.Data
+@using Veterimax.Controllers
+<html>
+<head>
+    <title>Consulta de Suplidores</title>
+</head>
+<body>
+    <h2><b>Lista de Suplidores</b></h2>
+    <table border="1">
+        <tr>
+            <th>
+                Empresa
+            </th>
+            <th>
+                Representante de Ventas
+            </th>
+            <th>
+                Direccion
+            </th>
+            <th>
+                Telefono
+            </th>
+            <th>
+                Correo Electronico
+            </th>
+            <th>
+                RNC
+            </th>
+        </tr>
+        @foreach (DataRow x in SuplidorController.dt.Rows)
+        {
+            <tr>
+                <td>
+                    @x["Empresa"].ToString()
+                </td>
+                <td>
+                    @x["RepresentanteDeVenta"].ToString()
+                </td>
+                <td>
+                    @x["Direccion"].ToString()
+                </td>
+                <td>
+                    @x["Telefono"].ToString()
+                </td>
+                <td>
+                    @x["CorreoElectronico"].ToString()
+                </td>
+                <td>
+                    @x["RNC"].ToString()
+                </td>
+            </tr>
+
+        }
+    </table>
+</body>
+</html>
