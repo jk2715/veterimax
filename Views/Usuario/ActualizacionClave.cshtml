@@ -1,0 +1,41 @@
+﻿
+@{
+    Layout = null;
+    ViewBag.Title = "ActualizacionClave";
+}
+@model Veterimax.Models.Usuario
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Actualizacion de Clave</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="~/css/formstyle.css">
+    <script type="text/javascript" src="~/js/Validacion.js"></script>
+</head>
+<body>
+    @using (Html.BeginForm("ActualizarClave", "Usuario", FormMethod.Post))
+    {
+    <div class="container">
+        <h2>
+            <b>Actualizar Clave</b>
+        </h2>
+        <div class="row">
+            <h4>Introduzca su nueva clave.</h4>
+            <div class="input-group">
+                @Html.PasswordFor(m => m.Clave)
+            </div>
+        </div>
+        <div class="row">
+            <h4>Confirme su nueva clave.</h4>
+            <div class="input-group">
+                @Html.Password("clave", "", new { @id = "clave" })
+            </div>
+        </div>
+        <input type="submit" value="Validar" onclick="return validarFormulario()" style="background-color:#7ed321; color:white;" />
+    </div>
+    }
+</body>
+</html>

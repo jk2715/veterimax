@@ -1,0 +1,157 @@
+﻿
+@model Veterimax.Models.Usuario
+
+@{
+    ViewBag.Title = "InicioSesion";
+}
+@using Veterimax.Controllers
+
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link href="~/css/Login.css" rel="stylesheet" />
+    <style>
+        .modal-padding {
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+        h6 {
+            color: green;
+        }
+    </style>
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+</head>
+    <body>
+        <a class="btn btn-default login-btn" href="#loginform">Login</a>
+        <div class="logologin">
+            <img src="~/images/Logo.png" width="327" />
+        </div>
+        @using(Html.BeginForm("ValidarAdmin", "Usuario", FormMethod.Post))
+        {
+            <div class="modal" tabindex="-1" role="dialog" id="myModal">
+            <div class="modal-dialog modal-sm" role="document" id="modalD">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b id="titulo">Inicio Admin</b></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body modal-padding" id="modalBody">
+                        <h4>Inicie sesion en su cuenta de administrador para desbloquear el sistema.</h4>
+                        <div class="row">
+                                <h6>Nombre de Usuario</h6>
+                                    @Html.TextBoxFor(m => m.Nombre,"", new { @id = "nombre", @class="form-control" })
+                            </div>
+                            <div class="row">
+                                <h6>Clave</h6>
+                                    @Html.PasswordFor(m => m.Clave, new {@class="form-control" })
+                            </div>
+                        </div>>
+                        <input type="submit" value="Desbloquear" style="background-color:#7ed321; color:white;width:70%;margin-bottom:1em;margin-left:1em;" />
+                    </div>
+                </div>
+            </div>
+        }
+
+        <section id="loginform" class="outer-wrapper" />
+
+        <div class="inner-wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-4 col-sm-offset-4">
+                        <h2 class="text-center">Bienvenido</h2>
+                        @using (Html.BeginForm("InicioSesion", "Usuario", FormMethod.Post))
+                        {
+                        <div class="form-group">
+                            <label for="usuario">Usuario</label>
+                            @Html.TextBoxFor(m => m.Nombre, new { @placeholder = "Usuario", @class = "form-control", @id = "usuario", @oninput = "removerAlerta()" })
+                        </div>
+                        <div class="form-group">
+                            <label for="clave">Contraseña</label>
+                            @Html.PasswordFor(m => m.Clave, new { @placeholder = "Clave", @class = "form-control", @id = "clave", @oninput = "removerAlerta()" })
+                        </div>
+                        <br />
+                        <a id="olvidar" asp-controller="Usuario" asp-action="RecuperacionClave">Olvide mi clave</a>
+                        <br />
+                        <input type="submit" class="btn btn-default" value="Entrar" />
+                        <br />
+                        <div id="alerta">
+
+                        </div>
+                        <div id="alerta2">
+                        </div>
+                        @if (ViewBag.Message == "Combinacion de usuario y clave incorrectas.")
+                        {
+                        <script>
+                            window.onload = function () {
+                                var alerta = document.getElementById('alerta');
+                                alerta.className = "alert alert-danger"
+                                alerta.innerHTML = "Usuario o clave incorrecta.";
+                            }
+                        </script>
+                        }   
+                        @if (UsuarioController.bloqueo == "Ha fallado en 3 intentos de inicio de sesion")
+                        {
+                        <script>
+                            window.onload = function () {
+                                var alerta = document.getElementById('alerta');
+                                alerta.className = "alert alert-danger"
+                                alerta.innerHTML = "Ha fallado en 3 intentos de inicio de sesion, el acceso al sistema ha sido bloqueado. Por favor contacte al administrador del sistema.";
+                                document.getElementById("usuario").disabled = true;
+                                document.getElementById("clave").disabled = true;
+                                document.getElementById("olvidar").style.visibility = "hidden";
+                                document.getElementById("alerta2").className = "alert alert-primary";;
+                                var a = document.createElement("input");
+                                a.type = "button";
+                                a.value = "Desbloquear Sistema";
+                                a.id = "desbloqueo";
+                                document.getElementById("alerta2").appendChild(a);
+                                $("#desbloqueo").click(function () {
+                                    $("#myModal").modal("show")
+                                });
+                            }
+
+                            $(document).ready(function () {
+                                $("#desbloqueo").click(function () {
+                                    $("#myModal").modal("show")
+                                });
+                            });
+
+                        </script>
+                        }
+                        @if(ViewBag.Message == "Exito")
+                        {
+                            <script>
+                                window.onload = function () {
+                                document.getElementById("usuario").disabled = false;
+                                document.getElementById("clave").disabled = false;
+                                document.getElementById("olvidar").style.visibility = "visible";
+                                var alerta = document.getElementById('alerta');
+                                alerta.className = "alert alert-success"
+                                alerta.innerHTML = "El sistema ha sido desbloqueado exitosamente!";
+                            }
+
+                        </script>
+
+                        }
+                        <script>
+                            function removerAlerta() {
+                                document.getElementById('alerta').className = "";
+                                document.getElementById('alerta').innerHTML = "";
+                            }
+                        </script>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>

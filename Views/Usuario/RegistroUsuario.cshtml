@@ -1,0 +1,370 @@
+﻿
+@{
+    ViewBag.Title = "RegistroUsuario";
+}
+@model Veterimax.Models.Usuario
+@using Veterimax.Controllers
+@using System.Data
+@using Newtonsoft.Json
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>RegistroUsuario</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/formstyle.css">
+    <script type="text/javascript" src="~/js/Validacion.js"></script>
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <style>
+        #sidebar {
+            float: left;
+        }
+
+        #wrapper {
+            width: 75%;
+        }
+        .main {
+            width: 95%;
+        }
+    </style>
+</head>
+<body id="body">
+    @{
+        Layout = "_LayoutPruebs";
+    }
+    @{
+        var cc = new UsuarioController();
+        var dt = cc.GetUsuarios();
+        var dtRespuestas = cc.GetRespuestas();
+        var js = JsonConvert.SerializeObject(dtRespuestas);
+        var jsEmp = JsonConvert.SerializeObject(dt);
+        int i = 0;
+    }
+    @using (Html.BeginForm("EliminarUsuario", "Usuario", FormMethod.Post))
+    {
+        <div id="wrapper">
+            <div class="main">
+                <div class="inner">
+                    <section style="">
+                        <div id="alertaExito"></div>
+                        <div class="row">
+                            <div class="col-third">
+                                <input type="button" id="modalbtn" class="btn btn-success" style="padding:0em;width:40%" value="Agregar" />
+                            </div>
+                            <div class="col-third">
+                                <input type="button" class="btn btn-primary" style="margin-left:1em;padding:0em; width:40%" id="editar" value="Editar" onclick="Editar()" />
+                            </div>
+                            <div class="col-third">
+                                <input type="submit" class="btn btn-primary" style="margin-left:1em;padding:0em;width:40%" id="eliminar" value="Eliminar" onclick="return Eliminar()" />
+                            </div>
+                        </div>
+                        <input type="hidden" id="listaUsuarios" name="listaUsuarios" value="0" />
+                        <input type="text" id="buscar" placeholder="Filtrar" style="width:30%; margin-left:20em; margin-bottom:1em;" />
+                        <table border="1" class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">
+                                        Acciones
+                                    </th>
+                                    <th scope="col">
+                                        ID
+                                    </th>
+                                    <th scope="col">
+                                        Empleado
+                                    </th>
+                                    <th scope="col">
+                                        Nombre de Usuario
+                                    </th>
+                                    <th scope="col">
+                                        Permisos
+                                    </th>
+                                    <th scope="col">
+                                        Fecha de Registro
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="table1" style="color: black;">
+                                @foreach (DataRow x in dt.Rows)
+                                {
+                                    string id = i.ToString();
+                                    int rownum = i;
+                                    <tr>
+                                        <td><input type="checkbox" /></td>
+                                        <td>@x["IdUsuario"].ToString()</td>
+                                        <td>@x["NombreCompleto"].ToString()</td>
+                                        <td>@x["Usuario"].ToString()</td>
+                                        <td>@x["Permisos"].ToString()</td>
+                                        <td>@x["FechaRegistro"].ToString()</td>
+                                    </tr>
+                                    i++;
+                                }
+                            </tbody>
+                        </table>
+                    </section>
+                </div>
+            </div>
+
+        </div>
+    }
+
+    @using (Html.BeginForm("RegistroUsuario", "Usuario", FormMethod.Post))
+    {
+        List<SelectListItem> empleadosDropList = new List<SelectListItem>();
+        var ec = new EmpleadoController();
+        var dtEmp = ec.ListaEmpleados();
+        foreach (DataRow x in dtEmp.Rows)
+        {
+            empleadosDropList.Add(new SelectListItem { Text = x["NombreCompleto"].ToString(), Value = x["IdEmpleado"].ToString() });
+        }
+        <div class="modal" tabindex="-1" role="dialog" id="myModal">
+            <div class="modal-dialog" role="document" id="modalD">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b id="titulo">Nuevo Usuario</b></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="alertaError">
+                    </div>
+                    <div class="modal-body modal-padding" id="modalBody">
+                        <div class="row">
+                            <h6>Empleado</h6>
+                            <div class="input-group">
+                                @Html.DropDownListFor(m => m.IdEmpleado, empleadosDropList, "--Seleccionar--", new { @style = "width:100%;", @id = "empleados" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-half">
+                                <h6>Nombre de Usuario</h6>
+                                <div class="input-group input-group-icon">
+                                    @Html.TextBoxFor(m => m.Nombre, new { @placeholder = "Nombre de Usuario", @id = "usuario", @onclick = "nombre_Input('usuario')" })
+                                    <div class="input-icon"><i class="fa fa-user"></i></div>
+                                </div>
+                            </div>
+                            <div class="col-half">
+                                <h6>Clave</h6>
+                                <div class="input-group input-group-icon">
+                                    @Html.PasswordFor(m => m.Clave, new { @placeholder = "Clave", @id = "clave" })
+                                    <div class="input-icon"><i class="fa fa-key"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h6>Permisos de Usuario</h6>
+                            <div class="input-group">
+                                @Html.DropDownListFor(m => m.Permisos, new List<SelectListItem> {
+                                                   new SelectListItem{Text = "Normal", Value = "Normal"},
+                                                   new SelectListItem{Text = "Administrador", Value = "Administrador"}
+                                                }, new { @id = "permisos" })
+                            </div>
+                        </div>
+                        <br />
+                        <div id="preguntas">
+                            <h5>Responda las siguientes preguntas de seguridad</h5>
+                            <div class="row">
+                                <h6>&iquest;Cu&aacute;l es su color preferido?</h6>
+                                <div class="input-group">
+                                    @Html.TextBox("r1Box", "", new { @id = "r1Box" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <h6>&iquest;Cu&aacute;l fue el nombre de su primera mascota?</h6>
+                                <div class="input-group">
+                                    @Html.TextBox("r2Box", "", new { @id = "r2Box" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <h6>&iquest; Cu&aacute;l es el nombre del lugar donde creci&oacute;?</h6>
+                                <div class="input-group">
+                                    @Html.TextBox("r3Box", "", new { @id = "r3Box" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <h6>&iquest;Cu&aacute;l es su pasatiempo preferido?</h6>
+                                <div class="input-group">
+                                    @Html.TextBox("r4Box", "", new { @id = "r4Box" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <h6>&iquest;Cu&aacute;l es el nombre de la escuela primaria en la que estudi&oacute;?</h6>
+                                <div class="input-group">
+                                    @Html.TextBox("r5Box", "", new { @id = "r5Box" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <h6>&iquest;Cu&aacute;l es el nombre de su primer(a) novio(a)?</h6>
+                                <div class="input-group">
+                                    @Html.TextBox("r6Box", "", new { @id = "r6Box" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <h6>&iquest;Cu&aacute;l es su tipo de m&uacute;sica preferida?</h6>
+                                <div class="input-group">
+                                    @Html.TextBox("r7Box", "", new { @id = "r7Box" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <h6>&iquest;Cu&aacute;l es el nombre de su mejor amigo(a)?</h6>
+                                <div class="input-group">
+                                    @Html.TextBox("r8Box", "", new { @id = "r8Box" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <h6>&iquest;A qu&eacute; lugar del mundo desear&iacute;a visitar?</h6>
+                                <div class="input-group">
+                                    @Html.TextBox("r9Box", "", new { @id = "r9Box" })
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="hidden" name="hidden" value="0" />
+                        <input type="hidden" id="evalHidden" name="evalHidden" value="false" />
+                        <input type="submit" value="Guardar" onclick="return validarFormulario('myModal')" style="background-color:#7ed321; color:white;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (ViewBag.Message == "Exito")
+    {
+        <script>
+            window.onload = function () {
+                document.getElementById("alertaExito").className = "alert alert-success";
+                document.getElementById("alertaExito").innerHTML = "Ha registrado un usuario con exito!";
+            }
+            window.onclick = function () {
+                document.getElementById("alertaExito").className = "";
+                document.getElementById("alertaExito").innerHTML = "";
+            }
+        </script>
+    }
+    <style>
+        .modal-padding {
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+        .btn-size {
+            width: 9%;
+        }
+
+        body {
+            background-color: white;
+        }
+
+        .dropSize {
+            width: 100%;
+        }
+
+        h6 {
+            color: green;
+        }
+    </style>
+    <script>
+        function Editar() {
+            var count = -1;
+            document.getElementById('evalHidden').value = "true";
+            var respuestas = @Html.Raw(js);
+            var empleados = @Html.Raw(jsEmp);
+            document.getElementById('titulo').innerHTML = "Edicion de Usuario";
+            var table = document.getElementById('table1');
+            var check = table.getElementsByTagName("input");
+            for (var i = 0; i < check.length; i++) {
+                if (check[i].checked) {
+                    if (count > -1) {
+                        count = -1;
+                        document.getElementById("alertaExito").className = "alert alert-warning";
+                        document.getElementById("alertaExito").innerHTML = "No puede seleccionar mas de una fila para entrar en modo edicion.";
+                        break;
+                    }
+                    count = i;
+                }
+            }
+            if (count > -1) {
+                var row = table.rows[count];
+                for (var i = 0; i < respuestas.length; i++) {
+                    if (respuestas[i].IdUsuario == row.cells[1].innerHTML) {
+                        document.getElementById('r1Box').value = respuestas[i].Respuesta1;
+                        document.getElementById('r2Box').value = respuestas[i].Respuesta2;
+                        document.getElementById('r3Box').value = respuestas[i].Respuesta3;
+                        document.getElementById('r4Box').value = respuestas[i].Respuesta4;
+                        document.getElementById('r5Box').value = respuestas[i].Respuesta5;
+                        document.getElementById('r6Box').value = respuestas[i].Respuesta6;
+                        document.getElementById('r7Box').value = respuestas[i].Respuesta7;
+                        document.getElementById('r8Box').value = respuestas[i].Respuesta8;
+                        document.getElementById('r9Box').value = respuestas[i].Respuesta9;
+                        break;
+                    }
+
+                }
+                var dd = document.getElementById('empleados');
+                var hidden = document.getElementById("hidden");
+                for (var i = 0; i < empleados.length; i++) {
+                    if (empleados[i].IdUsuario == row.cells[1].innerHTML) {
+                        var opt = document.createElement("option");
+                        opt.value = empleados[i].IdEmpleado;
+                        opt.text = empleados[i].NombreCompleto;
+                        hidden.value = opt.value;
+                        dd.add(opt);
+                        dd.selectedIndex = dd.length - 1;
+                        dd.disabled = true;
+                        break;
+                    }
+                }
+                var suplidores = document.getElementById('permisos');
+                for (var i = 0; i < suplidores.options.length; i++) {
+                    if (suplidores.options[i].text == row.cells[4].innerHTML) {
+                        suplidores.selectedIndex = i;
+                        break;
+                    }
+                }
+                document.getElementById('usuario').value = row.cells[3].innerHTML;
+                $("#myModal").modal("show");
+            }
+            else {
+                document.getElementById("alertaExito").className = "alert alert-warning";
+                document.getElementById("alertaExito").innerHTML = "Debe seleccionar una fila para entrar en modo de edicion.";
+            }
+        }
+        function Eliminar() {
+            var listaEliminar = [];
+            var listaUsuarios = [];
+            document.getElementById('evalHidden').value = "eliminar";
+            var table = document.getElementById('table1');
+            var check = table.getElementsByTagName("input");
+            for (var i = 0; i < check.length; i++) {
+                if (check[i].checked) {
+                    listaEliminar.push(i);
+                }
+            }
+            if (listaEliminar.length > 0) {
+                for (var i = 0; i < listaEliminar.length; i++) {
+                    var row = table.rows[listaEliminar[i]];
+                    listaUsuarios.push(row.cells[1].textContent);
+                }
+                document.getElementById("listaUsuarios").value = listaUsuarios.toString();
+                return true;
+            }
+            else {
+                document.getElementById("alertaExito").className = "alert alert-warning";
+                document.getElementById("alertaExito").innerHTML = "Debe seleccionar al menos una fila para eliminar";
+                return false;
+            }
+        }
+        $(document).ready(function () {
+            $("#modalbtn").click(function () {
+                $("#myModal").modal("show")
+            });
+        });
+        $(document).ready(function () {
+            $("#myModal").on("hidden.bs.modal", function () {
+                window.location.href = "@Url.Action("RegistroUsuario", "Usuario")";
+            });
+        });
+    </script>
+</body>
+</html>

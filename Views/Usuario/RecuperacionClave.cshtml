@@ -1,0 +1,91 @@
+﻿
+@{
+    Layout = null;
+    ViewBag.Title = "RecuperacionClave";
+}
+@model Veterimax.Models.Usuario
+@using Veterimax.Models
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Recuperacion de Clave</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="~/css/formstyle.css">
+    <script type="text/javascript" src="~/js/Validacion.js"></script>
+</head>
+<body onload="Get_Preguntas()">
+    @using (Html.BeginForm("RecuperarClave", "Usuario", FormMethod.Get))
+    {
+    <div class="container">
+        <h2>
+            <b>Recuperacion de Clave</b>
+        </h2>
+        <div class="row">
+            <h4>Introduzca su nombre de usuario.</h4>
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Nombre)
+            </div>
+        </div>
+        <br />
+        <h3><b>Responda a las siguientes preguntas para verificar su identidad.</b></h3>
+        <div class="row">
+            <h4 id="r1"></h4>
+            <div class="input-group">
+                @Html.TextBox("r1Box","", new {@id="r1Box"})
+            </div>
+        </div>
+        <div class="row">
+            <h4 id="r2"></h4>
+            <div class="input-group">
+                @Html.TextBox("r2Box","", new {@id="r2Box"})
+            </div>
+        </div>
+        <div class="row">
+            <h4 id="r3"></h4>
+            <div class="input-group">
+                @Html.TextBox("r3Box","", new {@id="r3Box"})
+            </div>
+        </div>
+        <input type="submit" value="Validar" onclick="return validarFormulario()" style="background-color:#7ed321; color:white;" />
+    </div>
+    }
+    <script>
+        function Get_Preguntas() {
+            var listaPreguntas = [];
+            var listaNumeros = [];
+            listaPreguntas.push("Cual es su color preferido?");
+            listaPreguntas.push("Cual fue el nombre de su primera mascota?");
+            listaPreguntas.push("Cual es el nombre del lugar donde crecio?");
+            listaPreguntas.push("Cual es su pasatiempo preferido?");
+            listaPreguntas.push("Cual es el nombre de la escuela primaria en la que estudio?");
+            listaPreguntas.push("Cual es el nombre de su primer(a) novio(a)?");
+            listaPreguntas.push("Cual es su tipo de musica preferida?");
+            listaPreguntas.push("Cual es el nombre de su mejor amigo(a)?");
+            listaPreguntas.push("A que lugar del mundo desearia visitar?");
+            var h1 = document.getElementById("r1");
+            var h2 = document.getElementById("r2");
+            var h3 = document.getElementById("r3");
+            for (var i = 0; i < 3; i++) {
+                var x = Math.random() * (8 - 1) + 1;
+                x = Math.round(x);
+                for (var a = 0; a < listaNumeros.length; a++) {
+                    if (x == listaNumeros[a]) {
+                        x = Math.random() * (8 - 1) + 1;
+                        x = Math.round(x);
+                    }
+                }
+                listaNumeros.push(x);
+            }
+            var rng1 = listaNumeros[0];
+            var rng2 = listaNumeros[1];
+            var rng3 = listaNumeros[2];
+            h1.innerHTML = listaPreguntas[rng1];
+            h2.innerHTML = listaPreguntas[rng2];
+            h3.innerHTML = listaPreguntas[rng3];
+        }
+    </script>
+</body>
+</html>
