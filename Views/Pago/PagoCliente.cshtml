@@ -1,0 +1,401 @@
+﻿
+@{
+    ViewBag.Title = "PagoCliente";
+}
+@model Veterimax.Models.PagoCliente
+@using Veterimax.Controllers
+@using Newtonsoft.Json
+@using System.Data
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/formstyle.css">
+    <script type="text/javascript" src="~/js/Validacion.js"></script>
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <title>Pago de un Cliente</title>
+    <style>
+        #sidebar {
+            float: left;
+        }
+
+        #wrapper {
+            width: 75%;
+        }
+
+        .main {
+            width: 95%;
+        }
+    </style>
+</head>
+<body onload="get_Clientes()" style="background-color:white;">
+    @{
+        Layout = "_LayoutPruebs";
+    }
+    @using (Html.BeginForm("Registrar_PagoCliente", "Pago", FormMethod.Post))
+    {
+
+        var pc = new PagoController();
+        var pagos = pc.GetPagos();
+        var facturas = pc.Get_Deudas();
+        var clientes = pc.Get_Clientes();
+        var jsPagos = JsonConvert.SerializeObject(pagos);
+        var jsfacturas = JsonConvert.SerializeObject(facturas);
+        var jsClientes = JsonConvert.SerializeObject(clientes);
+        <div id="wrapper">
+            <div class="main">
+                <div class="inner">
+                    <section style="">
+                        <div id="alertaError"></div>
+                        <div class="row">
+                            <h2 style="margin-left:5em;"><b>Pagos de Clientes</b></h2>
+                        </div>
+                        <div class="row" style="margin-top:5em">
+                            <h6 style="margin-left:1em;">Cliente</h6>
+                            <input type="text" id="clientes" list="listaClientes" style="width:20%; margin-bottom:1em; margin-left:4.7em" />
+                            <datalist id="listaClientes"></datalist>
+                            <input type="button" id="facturasBtn" value="Mostrar Facturas" onclick="get_Facturas()" class="btn btn-success" style="width:15%;height:50%; margin-left:1em;" />
+                            <input type="text" id="buscar" placeholder="Filtrar" style="width:20%; margin-bottom:1em; margin-left:10em" />
+                            <input type="button" id="pagosBtn" value="Mostrar Pagos" onclick="show_Pagos()" class="btn btn-success" disabled style="width:15%;height:50%;" />
+                        </div>
+                        <table border="1" class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">
+                                        Seleccion
+                                    </th>
+                                    <th scope="col">
+                                        No. de Factura
+                                    </th>
+                                    <th scope="col">
+                                        Autor
+                                    </th>
+                                    <th scope="col">
+                                        Tota de Descuento
+                                    </th>
+                                    <th scope="col">
+                                        Total de ITBIS
+                                    </th>
+                                    <th scope="col">
+                                        Monto Total
+                                    </th>
+                                    <th scope="col">
+                                        Monto Adeudado
+                                    </th>
+                                    <th scope="col">
+                                        Fecha de Registro
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="table1" style="color:black;"></tbody>
+                        </table>
+                        <input type="button" id="nuevoPagoBtn" value="Pagar" onclick="mostrar_FormularioPago()" class="btn btn-success" disabled style="width:15%;height:50%;" />
+                    </section>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="myModal">
+            <div class="modal-dialog modal-lg" role="document" id="modalD">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b id="titulo">Pagos de Factura</b></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="alertaError1">
+                    </div>
+                    <div class="modal-body modal-padding" id="modalBody">
+                        <table border="1" class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">
+                                        No. Pago
+                                    </th>
+                                    <th scope="col">
+                                        Autor
+                                    </th>
+                                    <th scope="col">
+                                        Total Pagado
+                                    </th>
+                                    <th scope="col">
+                                        Fecha de Pago
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="table2" style="color:black;"></tbody>
+                        </table>
+                        <div id="empty"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="myModal2">
+            <div class="modal-dialog modal-lg" role="document" id="modalD">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b id="titulo">Nuevo Pago</b></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body modal-padding" id="modalBody">
+                        <div id="alert"></div>
+                        <table border="1" class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">
+                                        No. de Factura
+                                    </th>
+                                    <th scope="col">
+                                        Monto Adeudado
+                                    </th>
+                                    <th scope="col">
+                                        Monto a Pagar
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="table3" style="color:black;"></tbody>
+                            <tfoot style="color:black;">
+                                <tr>
+                                    <td colspan="2"><b>Total</b></td>
+                                    <td><label id="total">$0.00</label></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <input type="submit" value="Guardar" onclick="return get_Datos()" style="background-color:#7ed321; color:white;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="listaFacturas" id="listaFacturas" value="0" />
+        <input type="hidden" name="listaMonto" id="listaMonto" value="0" />
+        <input type="hidden" name="listaEstado" id="listaEstado" value="0" />
+        @Html.HiddenFor(m => m.IdCliente, new { @id = "clienteHidden" })
+        @Html.HiddenFor(m => m.Monto, new { @id = "totalHidden" })
+        <script>
+            function get_Clientes() {
+                var clientes = @Html.Raw(jsClientes);
+                var dataList = document.getElementById("listaClientes");
+                for (var i = 0; i < clientes.length; i++) {
+                    var option = document.createElement("option");
+                    option.value = clientes[i].Cliente;
+                    option.text = clientes[i].IdCliente;
+                    dataList.appendChild(option);
+                }
+            }
+            function get_Facturas() {
+                var clientes = @Html.Raw(jsClientes);
+                var facturas = @Html.Raw(jsfacturas);
+                var table = document.getElementById('table1');
+                var clienteBox = document.getElementById('clientes');
+                var idCliente = "";
+                for (var i = 0; i < clientes.length; i++) {
+                    if (clienteBox.value == clientes[i].Cliente) {
+                        idCliente = clientes[i].IdCliente;
+                        document.getElementById('clienteHidden').value = idCliente;
+                        break;
+                    }
+                }
+                if (idCliente != "") {
+                    for (var i = 0; i < facturas.length; i++) {
+                        if (idCliente == facturas[i].IdCliente) {
+                            var tr = document.createElement("tr");
+                            var td1 = document.createElement("td");
+                            var td2 = document.createElement("td");
+                            var td3 = document.createElement("td");
+                            var td4 = document.createElement("td");
+                            var td5 = document.createElement("td");
+                            var td6 = document.createElement("td");
+                            var td7 = document.createElement("td");
+                            var td8 = document.createElement("td");
+                            var check = document.createElement("input");
+                            check.type = "checkbox";
+                            td1.appendChild(check);
+                            td2.innerHTML = facturas[i].IdVenta;
+                            td3.innerHTML = facturas[i].Empleado;
+                            td4.innerHTML = facturas[i].TotalDescuento;
+                            td5.innerHTML = facturas[i].TotalITBIS;
+                            td6.innerHTML = facturas[i].Total;
+                            td7.innerHTML = facturas[i].Deuda;
+                            td8.innerHTML = facturas[i].FechaRegistro;
+                            tr.appendChild(td1);
+                            tr.appendChild(td2);
+                            tr.appendChild(td3);
+                            tr.appendChild(td4);
+                            tr.appendChild(td5);
+                            tr.appendChild(td6);
+                            tr.appendChild(td7);
+                            tr.appendChild(td8);
+                            table.appendChild(tr);
+                        }
+                    }
+                    var btn = document.getElementById('pagosBtn');
+                    btn.removeAttribute("disabled");
+                    var btn2 = document.getElementById('nuevoPagoBtn');
+                    btn2.removeAttribute("disabled");
+                }
+                else {
+                    document.getElementById('alertaError').className = "alert alert-danger";
+                    document.getElementById('alertaError').innerHTML = "Debe ingresar un cliente valido para verfiicar las facturas pendientes.";
+                }
+            }
+            function show_Pagos() {
+                var pagos = @Html.Raw(jsPagos);
+                var count = -1;
+                var b = false;
+                var table = document.getElementById('table1');
+                var table2 = document.getElementById('table2');
+                var rowcount = table2.rows.length;
+                for (var i = 0; i < rowcount; i++) {
+                    table2.deleteRow(0);
+                }
+                var check = table.getElementsByTagName("input");
+                for (var i = 0; i < check.length; i++) {
+                    if (check[i].checked) {
+                        if (count > -1) {
+                            count = -1;
+                            document.getElementById("alertaError").className = "alert alert-warning";
+                            document.getElementById("alertaError").innerHTML = "No puede seleccionar mas de un pago para mostrar.";
+                            break;
+                        }
+                        count = i;
+                    }
+                }
+                if (count > -1) {
+                    var row = table.rows[count];
+                    for (var i = 0; i < pagos.length; i++) {
+                        if (row.cells[1].textContent == pagos[i].IdVenta) {
+                            var tr = document.createElement('tr');
+                            var td1 = document.createElement('td');
+                            var td2 = document.createElement('td');
+                            var td3 = document.createElement('td');
+                            var td4 = document.createElement('td');
+                            td1.innerHTML = pagos[i].IdPago;
+                            td2.innerHTML = pagos[i].Empleado;
+                            td3.innerHTML = pagos[i].Monto;
+                            td4.innerHTML = pagos[i].Fechapago;
+                            tr.appendChild(td1);
+                            tr.appendChild(td2);
+                            tr.appendChild(td3);
+                            tr.appendChild(td4);
+                            table2.appendChild(tr);
+                            b = true;
+                        }
+                    }
+                    if (b == false) {
+                        var h6 = document.createElement("h6");
+                        h6.style = "color:grey;";
+                        h6.innerHTML = "No hay pagos para esta factura";
+                        document.getElementById('empty').appendChild(h6);
+                    }
+                    $("#myModal").modal("show");
+                }
+                else {
+                    document.getElementById("alertaError").className = "alert alert-warning";
+                    document.getElementById("alertaError").innerHTML = "Debe seleccionar una fila para mostrar los pagos.";
+                }
+            }
+            function mostrar_FormularioPago() {
+                var listaFactura = [];
+                var listaDeuda = [];
+                var b = false;
+                var table = document.getElementById('table1');
+                var table2 = document.getElementById('table3');
+                var rowcount = table2.rows.length;
+                for (var i = 0; i < rowcount; i++) {
+                    table2.deleteRow(0);
+                }
+                var check = table.getElementsByTagName("input");
+                for (var i = 0; i < check.length; i++) {
+                    if (check[i].checked) {
+                        listaFactura.push(table.rows[i].cells[1].textContent);
+                        listaDeuda.push(table.rows[i].cells[6].textContent);
+                    }
+                }
+                if (listaFactura.length > 0) {
+                    for (var i = 0; i < listaFactura.length; i++) {
+                        var tr = document.createElement('tr');
+                        var td1 = document.createElement('td');
+                        var td2 = document.createElement('td');
+                        var td3 = document.createElement('td');
+                        td1.innerHTML = listaFactura[i];
+                        td2.innerHTML = "$" + listaDeuda[i];
+                        var txtBox = document.createElement("input");
+                        txtBox.type = "text";
+                        txtBox.style = "width:30%";
+                        txtBox.className = "form-control";
+                        txtBox.addEventListener("input", calcular_Total);
+                        td3.appendChild(txtBox);
+                        tr.appendChild(td1);
+                        tr.appendChild(td2);
+                        tr.appendChild(td3);
+                        table2.appendChild(tr);
+                    }
+                    $("#myModal2").modal("show");
+                }
+                else {
+                    document.getElementById("alertaError").className = "alert alert-warning";
+                    document.getElementById("alertaError").innerHTML = "Debe seleccionar una factura para realizar un pago.";
+                }
+            }
+            function calcular_Total() {
+                var table = document.getElementById('table3');
+                var boxes = table.getElementsByTagName("input");
+                var total = 0;
+                for (var i = 0; i < boxes.length; i++) {
+                    boxes[i].classList.remove("marcar", "rojo");
+                    total = total + parseFloat(boxes[i].value);
+                }
+                document.getElementById('total').innerHTML = "$" + total.toFixed(2);
+            }
+            function get_Datos() {
+                var listaMonto = [];
+                var listaVenta = [];
+                var listaEstado = [];
+                var bool = true;
+                var table = document.getElementById('table3');
+                var row = table.rows;
+                txtBoxes = table.getElementsByTagName('input');
+                for (var i = 0; i < row.length; i++) {
+                    var str = row[i].cells[1].textContent;
+                    str = str.replace("$", "");
+                    if (parseFloat(txtBoxes[i].value) > parseFloat(str)) {
+                        txtBoxes[i].classList.add("marcar", "rojo");
+                        document.getElementById('alert').className = "alert alert-danger";
+                        document.getElementById('alert').innerHTML = "No puede ingresar un monto mayor al total debido";
+                        bool = false;
+                        break;
+                    }
+                    else {
+                        listaMonto.push(txtBoxes[i].value);
+                        listaVenta.push(row[i].cells[0].textContent);
+                    }
+                    if (parseFloat(txtBoxes[i].value) == parseFloat(str)) {
+                        listaEstado.push("Pagado");
+                    }
+                    else {
+                        listaEstado.push("Pendiente");
+                    }
+                }
+                if (bool) {
+                    document.getElementById('listaMonto').value = listaMonto.toString();
+                    document.getElementById('listaFacturas').value = listaVenta.toString();
+                    document.getElementById('listaEstado').value = listaEstado.toString();
+                    var str = document.getElementById('total').innerHTML;
+                    str = str.replace("$", "");
+                    document.getElementById('totalHidden').value = str;
+                }
+                return bool;
+            }
+        </script>
+    }
+</body>
+</html>
