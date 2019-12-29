@@ -1,0 +1,430 @@
+﻿
+@{
+    ViewData["Title"] = "RegistroCompra";
+}
+@model Veterimax.Models.Compra
+@using Newtonsoft.Json;
+@using Veterimax.Controllers;
+@using System.Data;
+
+<html>
+    <head>
+        <title>Registro de Orden de Compra</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+        <link rel="stylesheet" href="~/css/Validacion.css" />
+        <style>
+            .dropSize{
+                width:100%;
+            }
+            .dropPosition{
+                position:relative;
+                left:5em;
+            }
+            #sidebar {
+                float: left;
+            }
+
+            #wrapper {
+                width: 75%;
+            }
+            .main {
+                width: 95%; 
+            }
+        </style>
+    </head>
+    <body id="compraBody" onload="listarProductos()">
+        @{
+            Layout = "_LayoutPruebs";
+        }
+        @using (Html.BeginForm("RegistroCompra", "Compra", FormMethod.Post))
+        {
+            CompraController cc = new CompraController();
+            cc.GetCompraId();
+
+            List<string> listaPrecio = new List<string>();
+            listaPrecio = cc.Get_Precio();
+            var dtComprobante = cc.Get_TipoComprobante();
+            List<SelectListItem> listaComp = new List<SelectListItem>();
+            foreach (DataRow x in dtComprobante.Rows)
+            {
+                listaComp.Add(new SelectListItem { Text = x["Nombre"].ToString(), Value = x["Secuencia"].ToString() });
+            }
+            var sc = new ProductoController();
+            var listaSuplidores = sc.GetSuplidores();
+            var jsprecio = JsonConvert.SerializeObject(listaPrecio);
+            var jsSuplidor = JsonConvert.SerializeObject(listaSuplidores);
+            var productos = cc.Get_Productos();
+            var jsProducto = JsonConvert.SerializeObject(productos);
+            <div id="wrapper">
+                <div class="main">
+                    <div class="inner">
+                        <section style="">
+                            <div id="alertaError"></div>
+                            <div id="alertaExito"></div>
+                            <div class="row">
+                                <h2><b>Orden de Compra No. @Compra.tempCompraId</b></h2>
+                            </div>
+                            <div class="row" style="margin-top:5em;">
+                                <h6 style="margin-left:1em;">Suplidor</h6>
+                                <input type="text" class="form-control" list="listaSuplidores" style="margin-bottom:1em; margin-left:7em; width:20%;" id="suplidores" />
+                                <datalist id="listaSuplidores"></datalist>
+                            </div>
+                            <div class="row">
+                                <h6 style="margin-left:1em;">Metodo de Pago</h6>
+                                @Html.DropDownListFor(m => m.ModoPago, new List<SelectListItem>
+                                                     {   new SelectListItem{Text = "Efectivo", Value = "Efectivo"},
+                                                         new SelectListItem{Text = "Credito", Value = "Credito"},
+                                                     }, "--Seleccionar--", new { @class = "form-control", @style = "margin-left:3.2em; width:20%", @id = "modoPago" })
+                            </div>
+                            <div class="row">
+                                <h6 style="margin-left:1em;margin-top:1em;">Tipo de Comprobante</h6>
+                                @Html.DropDownListFor(m => m.NumeroComprobante, listaComp, "--Seleccionar--", new { @class = "form-control", @style = "margin-left:1em; margin-top:1em; width:20%", @id = "tipoComprobante" })
+                            </div>
+                            <br />
+                            <label>Fecha de Creacion&nbsp;</label><b>@DateTime.Now</b>
+                            <br />
+                            <table border="1" class="table">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">
+                                            Producto
+                                        </th>
+                                        <th scope="col">
+                                            Cantidad
+                                        </th>
+                                        <th scope="col">
+                                            Unidad
+                                        </th>
+                                        <th scope="col">
+                                            Precio
+                                        </th>
+                                        <th scope="col">
+                                            ITBIS
+                                        </th>
+                                        <th scope="col">
+                                            Precio Total
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table1">
+                                    <tr>
+                                        <td>
+                                            <input type="text" id="dropdown1" list="listaProducto" class="form-control" oninput="show_Precio('dropdown1','precio1', 'unidades1')" />
+                                            <datalist id="listaProducto"></datalist>
+                                        </td>
+                                        <td>
+                                            @Html.TextBox("cantidadBox", "", new { @class = "form-control", @id = "cantidad1", @oninput = "calcularTotal('precio1', 'cantidad1', 'total1')" })
+                                        </td>
+                                        <td>@Html.Label("unidadesLabel", " ", new { @id = "unidades1" })</td>
+                                        <td>
+                                            @Html.Label("precioLabel", "$0.00", new { @id = "precio1" })
+                                        </td>
+                                        <td>
+                                            @Html.Label("itbisLabel", "$0.00", new { @id = "itbis1" })
+                                        </td>
+                                        <td>
+                                            @Html.Label("totalLabel", "$0.00", new { @id = "total1" })
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot style="color:black;">
+                                    <tr>
+                                        <td colspan="5">
+                                            <b>SubTotal</b>
+                                        </td>
+                                        <td>
+                                            @Html.Label("subTotal", "$0.00", new { @id = "subTotal" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5">
+                                            <b>Total ITBIS</b>
+                                        </td>
+                                        <td>
+                                            @Html.Label("itbis", "$0.00", new { @id = "itbis" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5">
+                                            <b>Total</b>
+                                        </td>
+                                        <td>
+                                            @Html.Label("total", "$0.00", new { @id = "total" })
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <input type="submit" value="Guardar" onclick="return get_Datos()" class="btn btn-success" />
+                            <input type="button" value="Nueva Entrada" onclick="addRow()" class="btn btn-primary" />
+                        </section>
+                    </div>
+                </div>
+
+            </div>
+            <input type="hidden" name="itbisH" id="itbisH" value="0" />
+            <input type="hidden" name="totalH" id="totalH" value="0" />
+            <input type="hidden" name="productosHidden" id="productosHidden" value="0" />
+            <input type="hidden" name="cantidadHidden" id="cantidadHidden" value="0" />
+            <input type="hidden" name="precioHidden" id="precioHidden" value="0" />
+            <input type="hidden" name="itbisHidden" id="itbisHidden" value="0" />
+            <input type="hidden" name="totalHidden" id="totalHidden" value="0" />
+            @Html.HiddenFor(m => m.IdSuplidor, new { @id = "suplidorHidden" })
+
+            <br />
+            @if (ViewBag.Message == "Maximo")
+            {
+                <script>
+                    window.onload = function () {
+                        document.getElementById('alertaError').className = "alert alert-danger";
+                        document.getElementById('alertaError').innerHTML = "Las unidades de productos no deben superar el maximo permitido.";
+                    }
+                </script>
+            }
+            @if (ViewBag.Message == "Exito")
+            {
+                <script>
+                    window.onload = function () {
+                        window.location.href = "@Url.Action("RegistroCompra", "Compra")";
+                        document.getElementById('alertaError').className = "alert alert-success";
+                        document.getElementById('alertaError').innerHTML = "Se ha registrado la orden de compra con exito!";
+                    }
+                </script>
+            }
+            <script>
+                function calcularTotal(precioId, cantidadId, totalId) {
+                    // debugger;
+                    cantidad_Input(cantidadId);
+                    if (document.getElementById(precioId).innerHTML != "$0.00") {
+                        if (!document.getElementById(cantidadId).className.includes("marcar rojo")) {
+                            var str = document.getElementById(precioId).textContent;
+                            var precio = parseFloat(str.replace("$", ""));
+                            var cantidad = parseFloat(document.getElementById(cantidadId).value);
+                            var totalLabel = document.getElementById(totalId);
+                            var subTotal = precio * cantidad;
+                            var dropId = precioId.replace("precio", "dropdown");
+                            var itbisId = precioId.replace("precio", "itbis")
+                            var itbis = subTotal * @Compra.ITBIS;
+                            var total = subTotal - itbis;
+                            totalLabel.innerHTML = "$" + total.toFixed(2);
+                            document.getElementById(itbisId).innerHTML = "$" + itbis.toFixed(2);
+                            Totalizar();
+                        }
+                    }
+                    else {
+                        document.getElementById('alertaError').className = "alert alert-danger";
+                        document.getElementById('alertaError').innerHTML = "Debe seleccionar un producto antes de ingresar una cantidad.";
+                        document.getElementById(cantidadId).value = "";
+                    }
+                }
+
+                function get_Datos() {
+                    var listaProductos = [];
+                    var listaCantidad = [];
+                    var listaPrecio = [];
+                    var listaITBIS = [];
+                    var listaTotal = [];
+                    var suplidores = @Html.Raw(jsSuplidor);
+                    var table = document.getElementById('table1');
+                    var productos = @Html.Raw(jsProducto);
+                    for (var i = 1; i < table.rows.length + 1; i++) {
+                        for (var x = 0; x < productos.length; x++) {
+                            if (document.getElementById('dropdown' + i).value == productos[x].Descripcion) {
+                                listaProductos.push(productos[x].IdProducto);
+                            }
+                        }
+                    }
+                    for (var i = 0; i < suplidores.length; i++) {
+                        if (document.getElementById('suplidores').value == suplidores[i].Empresa) {
+                            document.getElementById('suplidorHidden').value = suplidores[i].IdSuplidor;
+                            break;
+                        }
+                    }
+                    for (var i = 1; i < table.rows.length + 1; i++) {
+                        var cantidad = document.getElementById('cantidad' + i).value;
+                        listaCantidad.push(cantidad);
+                    }
+                    for (var i = 0, row; row = table.rows[i]; i++) {
+                        var precio = row.cells[3].textContent;
+                        precio = precio.replace(/ /g, "");
+                        precio = precio.replace("$", "");
+                        precio = precio.replace(/\r?\n|\r/g, "");
+                        listaPrecio.push(precio);
+                        var itbis = row.cells[4].textContent;
+                        itbis = itbis.replace(/ /g, "");
+                        itbis = itbis.replace("$", "");
+                        itbis = itbis.replace(/\r?\n|\r/g, "");
+                        listaITBIS.push(itbis);
+                        var total = row.cells[5].textContent.replace(/ /g, "");
+                        total = total.replace("$", "");
+                        total = total.replace(/\r?\n|\r/g, "");
+                        listaTotal.push(total);
+                    }
+                    document.getElementById('productosHidden').value = listaProductos.toString();
+                    document.getElementById('cantidadHidden').value = listaCantidad.toString();
+                    document.getElementById('precioHidden').value = listaPrecio.toString();
+                    document.getElementById('itbisHidden').value = listaITBIS.toString();
+                    document.getElementById('totalHidden').value = listaTotal.toString();
+                    var totalH = document.getElementById('total').innerHTML;
+                    var itbisH = document.getElementById('itbis').innerHTML;
+                    document.getElementById('itbisH').value = itbisH;
+                    document.getElementById('totalH').value = totalH;
+
+                    return validarFormulario('table1');
+                }
+
+                function Totalizar() {
+                    var table = document.getElementById("table1");
+                    var totalITBIS = 0.00;
+                    var subTotal = 0.00;
+                    var total = 0.00;
+                    for (var i = 0, row; row = table.rows[i]; i++) {
+                        var str1 = row.cells[4].textContent;
+                        str1 = str1.replace(/ /g, "");
+                        var itbis = parseFloat(str1.replace("$", ""));
+                        str1 = row.cells[5].textContent;
+                        str1 = str1.replace(/ /g, "");
+                        var valor = parseFloat(str1.replace("$", ""));
+                        totalITBIS = totalITBIS + itbis;
+                        subTotal = subTotal + valor;
+                    }
+                    total = subTotal + totalITBIS;
+                    var subLabel = document.getElementById("subTotal");
+                    var itbisLabel = document.getElementById("itbis");
+                    var totalLabel = document.getElementById("total");
+                    subLabel.innerHTML = "$" + subTotal.toFixed(2);
+                    itbisLabel.innerHTML = "+$" + totalITBIS.toFixed(2);
+                    totalLabel.innerHTML = "$" + total.toFixed(2);
+                }
+                function addRow() {
+                    if (document.getElementById("suplidores").value != "") {
+                        var table = document.getElementById("table1");
+                        var rowcount = table.rows.length + 1;
+                        var row = document.createElement("tr");
+                        var td1 = document.createElement("td");
+                        var td2 = document.createElement("td");
+                        var td3 = document.createElement("td");
+                        var td4 = document.createElement("td");
+                        var td5 = document.createElement("td");
+                        var td6 = document.createElement("td");
+                        var drp = document.createElement("input");
+                        drp.type = "text";
+                        drp.id = "dropdown" + rowcount;
+                        drp.className = "form-control";
+                        drp.setAttribute('list', 'listaProducto');
+                        var txt = document.createElement("input");
+                        txt.type = "text";
+                        txt.id = "cantidad" + rowcount;
+                        txt.className = "form-control";
+                        var totLabel = document.createElement("label");
+                        totLabel.textContent = "$0.00";
+                        totLabel.id = "total" + rowcount;
+                        var itbisLabel = document.createElement("label");
+                        itbisLabel.textContent = "$0.00";
+                        itbisLabel.id = "itbis" + rowcount;
+                        var precioLabel = document.createElement("label");
+                        precioLabel.textContent = "$0.00";
+                        precioLabel.id = "precio" + rowcount;
+                        var unidadLabel = document.createElement("label");
+                        unidadLabel.id = "unidades" + rowcount;
+                        drp.addEventListener("input", function () {
+                            show_Precio(drp.id, precioLabel.id, unidadLabel.id);
+                        }, false);
+                        txt.addEventListener("input", function () {
+                            calcularTotal(precioLabel.id, txt.id, totLabel.id);
+                        }, false);
+                        table.appendChild(row);
+                        row.appendChild(td1);
+                        td1.appendChild(drp);
+                        row.appendChild(td2);
+                        td2.appendChild(txt);
+                        row.appendChild(td6);
+                        td6.appendChild(unidadLabel);
+                        row.appendChild(td3);
+                        td3.appendChild(precioLabel);
+                        row.appendChild(td5);
+                        td5.appendChild(itbisLabel);
+                        row.appendChild(td4);
+                        td4.appendChild(totLabel);
+                    }
+
+                    else {
+                        document.getElementById('alertaError').className = "alert alert-danger";
+                        document.getElementById('alertaError').innerHTML = "Debe seleccionar un suplidor";
+                    }
+                }
+
+                function eliminarAlerta() {
+                    document.getElementById('alertaError').className = "";
+                    document.getElementById('alertaError').innerHTML = "";
+                }
+
+                function show_Precio(dropId, id, unidadId) {
+                    if (document.getElementById('suplidores').innerHTML != "--Seleccionar--" && document.getElementById('modoPago').innerHTML != "--Seleccionar--") {
+                        var eval = true;
+                        var table = document.getElementById("table1");
+                        var data = @Html.Raw(jsprecio);
+                        var prod = @Html.Raw(jsProducto);
+                        var drop = document.getElementById(dropId);
+                        var producto = drop.value;
+                        for (var i = 1; i < table.rows.length + 1; i++) {
+                            var prodId = "dropdown" + i;
+                            if (document.getElementById(prodId).value == producto && prodId != dropId) {
+                                document.getElementById('alertaError').className = "alert alert-danger";
+                                document.getElementById('alertaError').innerHTML = "Debe seleccionar un producto diferente";
+                                eval = false;
+                                drop.value = "";
+                                break;
+                            }
+                        }
+                        if (eval) {
+                            var unidadLabel = document.getElementById(unidadId);
+                            for (var i = 0; i < prod.length; i++) {
+                                if (prod[i].Descripcion == producto) {
+                                    unidadLabel.innerHTML = prod[i].Unidades;
+                                    break;
+                                }
+                            }
+                            var count = data.length;
+                            var label = document.getElementById(id);
+                            for (var i = 0; i < count; i += 2) {
+                                if (producto == data[i]) {
+                                    label.innerHTML = "$" + data[i + 1];
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        document.getElementById('alertaError').className = "alert alert-danger";
+                        document.getElementById('alertaError').innerHTML = "Por favor seleccione un suplidor y un metodo de pago.";
+
+                    }
+                }
+                function listarProductos() {
+                    var data = @Html.Raw(jsProducto);
+                    var dataList = document.getElementById('listaProducto');
+                    for (var i = 0; i < data.length; i++) {
+                        var option = document.createElement("option");
+                        option.value = data[i].Descripcion;
+                        option.text = data[i].IdProducto;
+                        dataList.appendChild(option);
+                    }
+                    listarSuplidores();
+                }
+                function listarSuplidores() {
+                    var data = @Html.Raw(jsSuplidor);
+                    var dataList = document.getElementById('listaSuplidores');
+                    for (var i = 0; i < data.length; i++) {
+                        var option = document.createElement("option");
+                        option.value = data[i].Empresa;
+                        option.text = data[i].IdSuplidor;
+                        dataList.appendChild(option);
+                    }
+                }
+
+            </script>
+        }
+        <script src="~/js/Validacion.js"></script>
+    </body>
+</html>
+
+

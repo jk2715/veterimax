@@ -1,0 +1,307 @@
+﻿
+@{
+    ViewBag.Title = "LotesProducto";
+}
+@using Veterimax.Controllers
+@model Veterimax.Models.Compra
+@using System.Data
+@using Newtonsoft.Json
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>LotesProducto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/formstyle.css">
+    <script type="text/javascript" src="~/js/Validacion.js"></script>
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <style>
+        #sidebar {
+            float: left;
+        }
+
+        #wrapper {
+            width: 75%;
+        }
+        .main {
+            width: 95%;
+        }
+    </style>
+</head>
+<body>
+    @{
+        Layout = "_LayoutPruebs";
+    }
+    @{
+        var cc = new CompraController();
+        var dtLotes = cc.Get_Lotes();
+        var jsLotes = JsonConvert.SerializeObject(dtLotes);
+    }
+    <div id="wrapper">
+        <div class="main">
+            <div class="inner">
+                <section style="">
+                    <div id="alertaExito">
+                    </div>
+                    @using (Html.BeginForm("EliminarLote", "Compra", FormMethod.Post))
+                    {
+                        <input type="submit" class="btn btn-danger btn-size" value="Eliminar" onclick="return Eliminar()" />
+                        <input type="hidden" name="listaLotes" id="listaLotes" value="0" />
+                    }
+                    <input type="button" class="btn btn-primary btn-size" style="margin-left:1em;" id="editar" value="Editar" onclick="Editar()" />
+                    <input type="text" id="buscar" placeholder="Filtrar" style="width:40%; margin-bottom:1em; position:relative; left:30em;" />
+                    <table border="1" class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">
+                                    Acciones
+                                </th>
+                                <th scope="col">
+                                    No. de Lote
+                                </th>
+                                <th scope="col">
+                                    No. de Orden
+                                </th>
+                                <th scope="col">
+                                    Producto
+                                </th>
+                                <th scope="col">
+                                    Fecha Entrada
+                                </th>
+                                <th scope="col">
+                                    Comentarios
+                                </th>
+                                <th scope="col">
+                                    Recibido Por
+                                </th>
+                                <th scope="col">
+                                    Cantidad Recibida
+                                </th>
+                                <th scope="col">
+                                    Fecha Expiracion
+                                </th>
+                                <th scope="col">
+                                    Estado
+                                </th>
+                                <th scope="col">
+                                    Ubicacion
+                                </th>
+                                <th scope="col">
+                                    Fecha de Registro
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="table1" style="color:black;">
+                            @foreach (DataRow a in dtLotes.Rows)
+                            {
+                                <tr>
+                                    <td><input type="checkbox" /></td>
+                                    <td>@a["IdLote"].ToString()</td>
+                                    <td>@a["IdCompra"].ToString()</td>
+                                    <td>@a["Descripcion"].ToString()</td>
+                                    <td>@a["FechaEntrada"].ToString()</td>
+                                    <td>@a["Comentarios"].ToString()</td>
+                                    <td>@a["Empleado"].ToString()</td>
+                                    <td>@a["CantidadRecibida"].ToString()</td>
+                                    <td>@a["FechaExpiracion"].ToString()</td>
+                                    <td>@a["Estado"].ToString()</td>
+                                    <td>@a["Ubicacion"].ToString()</td>
+                                    <td>@a["FechaRegistro"].ToString()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </div>
+
+    </div>
+    @using (Html.BeginForm("EditarLote", "Compra", FormMethod.Post))
+    {
+        <div class="modal" tabindex="-1" role="dialog" id="myModal">
+            <div class="modal-dialog modal-lg" role="document" id="modalD">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b id="titulo">Editar Lote</b></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body modal-padding" id="modalBody">
+                        <table border="1" class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">
+                                        No. de Lote
+                                    </th>
+                                    <th scope="col">
+                                        No. de Orden
+                                    </th>
+                                    <th scope="col">
+                                        Producto
+                                    </th>
+                                    <th scope="col">
+                                        Fecha Entrada
+                                    </th>
+                                    <th scope="col">
+                                        Comentarios
+                                    </th>
+                                    <th scope="col">
+                                        Cantidad Recibida
+                                    </th>
+                                    <th scope="col">
+                                        Fecha Expiracion
+                                    </th>
+                                    <th scope="col">
+                                        Ubicacion
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="table2" style="color:black;"></tbody>
+                        </table>
+                        <input type="submit" id="guardar" value="Guardar" onclick="return get_Datos()" style="background-color:#7ed321; color:white;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="loteHidden" id="loteHidden" value="0" />
+        <input type="hidden" name="cantidadHidden" id="cantidadHidden" value="0" />
+        <input type="hidden" name="expiracionHidden" id="expiracionHidden" value="0" />
+        <input type="hidden" name="comentarioHidden" id="comentarioHidden" value="0" />
+        <input type="hidden" name="ubicacionHidden" id="ubicacionHidden" value="0" />
+    }
+    <style>
+        .modal-padding {
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+        .btn-size {
+            width: 10%;
+            position: relative;
+            left: 3em;
+            top: 3em;
+        }
+
+        body {
+            background-color: white;
+        }
+
+        .dropSize {
+            width: 100%;
+        }
+
+        h6 {
+            color: green;
+        }
+    </style>
+    <script>
+        function Editar() {
+            var count = -1;
+            var table = document.getElementById('table1');
+            var check = table.getElementsByTagName("input");
+            for (var i = 0; i < check.length; i++) {
+                if (check[i].checked) {
+                    if (count > -1) {
+                        count = -1;
+                        document.getElementById("alertaExito").className = "alert alert-warning";
+                        document.getElementById("alertaExito").innerHTML = "No puede seleccionar mas de una fila para entrar en modo edicion.";
+                        break;
+                    }
+                    count = i;
+                }
+            }
+            if (count > -1) {
+                var row = table.rows[count];
+                var table2 = document.getElementById('table2');
+                var tr = document.createElement('tr');
+                var td1 = document.createElement('td');
+                var td2 = document.createElement('td');
+                var td3 = document.createElement('td');
+                var td4 = document.createElement('td');
+                var td5 = document.createElement('td');
+                var td6 = document.createElement('td');
+                var td7 = document.createElement('td');
+                var td8 = document.createElement('td');
+                td1.innerHTML = row.cells[1].innerHTML;
+                td2.innerHTML = row.cells[2].innerHTML;
+                td3.innerHTML = row.cells[3].innerHTML;
+                td4.innerHTML = row.cells[4].innerHTML;
+                var txtArea = document.createElement('textarea');
+                txtArea.value = row.cells[5].innerHTML;
+                txtArea.id = 'comentarios';
+                var cantidadBox = document.createElement('input');
+                cantidadBox.type = 'text';
+                cantidadBox.value = row.cells[7].innerHTML;
+                var expiracionBox = document.createElement('input');
+                expiracionBox.type = 'text';
+                expiracionBox.value = row.cells[8].innerHTML;
+                var ubicacionBox = document.createElement('input');
+                ubicacionBox.type = 'text';
+                ubicacionBox.value = row.cells[10].innerHTML;
+                td5.appendChild(txtArea);
+                td6.appendChild(cantidadBox);
+                td7.appendChild(expiracionBox);
+                td8.appendChild(ubicacionBox);
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                tr.appendChild(td3);
+                tr.appendChild(td4);
+                tr.appendChild(td5);
+                tr.appendChild(td6);
+                tr.appendChild(td7);
+                tr.appendChild(td8);
+                table2.appendChild(tr);
+                $("#myModal").modal("show");
+            }
+            else {
+                document.getElementById("alertaExito").className = "alert alert-warning";
+                document.getElementById("alertaExito").innerHTML = "Debe seleccionar una fila para entrar en modo de edicion.";
+            }
+        }
+        function get_Datos() {
+            var table = document.getElementById('table2');
+            var row = table.rows[0];
+            document.getElementById('loteHidden').value = row.cells[0].innerHTML;
+            var inputs = table.getElementsByTagName('input');
+            var comentario = document.getElementById('comentarios');
+            var c = document.getElementById('comentarioHidden');
+            c.value = comentario.value;
+            document.getElementById('cantidadHidden').value = inputs[0].value;
+            document.getElementById('expiracionHidden').value = inputs[1].value;
+            document.getElementById('ubicacionHidden').value = inputs[2].value;
+            return validarFormulario('myModal');
+        }
+        function Eliminar() {
+            var listaEliminar = [];
+            var listaLotes = [];
+            var table = document.getElementById('table1');
+            var check = table.getElementsByTagName("input");
+            for (var i = 0; i < check.length; i++) {
+                if (check[i].checked) {
+                    listaEliminar.push(i);
+                }
+            }
+            if (listaEliminar.length > 0) {
+                for (var i = 0; i < listaEliminar.length; i++) {
+                    var row = table.rows[listaEliminar[i]];
+                    listaEmpleados.push(row.cells[1].textContent);
+                }
+                document.getElementById("listaLotes").value = listaLotes.toString();
+                return true;
+            }
+            else {
+                document.getElementById("alertaExito").className = "alert alert-warning";
+                document.getElementById("alertaExito").innerHTML = "Debe seleccionar al menos una fila para eliminar";
+                return false;
+            }
+        }
+    </script>
+    <script src="~/js/Validacion.js"></script>
+</body>
+</html>

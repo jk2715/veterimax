@@ -1,0 +1,221 @@
+﻿
+@using System.Data
+@using Veterimax.Controllers
+@using Newtonsoft.Json
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Ver Compras</title>
+    <title>Registro de Cliente</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/formstyle.css">
+    <script type="text/javascript" src="~/js/Validacion.js"></script>
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <style>
+        #sidebar {
+            float: left;
+        }
+
+        #wrapper {
+            width: 75%;
+            float:right;
+        }
+        .main {
+            width: 95%;
+        }
+    </style>
+</head>
+<body>
+    @Html.Partial("_formLayout")
+    @{
+        var cc = new CompraController();
+        var dtCompras = cc.GetCompras();
+        var dtDetalles = cc.GetDetalles();
+        var jsDetalles = JsonConvert.SerializeObject(dtDetalles);
+        int i = 0;
+        int x = 0;
+    }
+
+    <div id="wrapper">
+        <div class="main">
+            <div class="inner">
+                <section style="">
+                    <input type="button" onclick="ver_Detalles()" value="Ver Detalles" class="btn-size" />
+                    <input type="text" id="buscar" placeholder="Filtrar" style="width:40%; margin-bottom:1em; position:relative; left:30em;" />
+                    <table border="1" class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">
+                                    Acciones
+                                </th>
+                                <th scope="col">
+                                    No. de Orden
+                                </th>
+                                <th scope="col">
+                                    Suplidor
+                                </th>
+                                <th scope="col">
+                                    Solicitante
+                                </th>
+                                <th scope="col">
+                                    Total de ITBIS
+                                </th>
+                                <th scope="col">
+                                    Monto Total
+                                </th>
+                                <th scope="col">
+                                    Estado
+                                </th>
+                                <th scope="col">
+                                    Fecha de Registro
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="table1" style="color:black;">
+                            @foreach (DataRow a in dtCompras.Rows)
+                            {
+                                string id = i.ToString();
+                                <tr>
+                                    <td><input type="checkbox" /></td>
+                                    <td>@a["IdCompra"].ToString()</td>
+                                    <td>@a["Empresa"].ToString()</td>
+                                    <td>@a["Solicitante"].ToString()</td>
+                                    <td>$@a["TotalITBIS"].ToString()</td>
+                                    <td>$@a["Total"].ToString()</td>
+                                    <td>@a["Estado"].ToString()</td>
+                                    <td>@a["FechaRegistro"].ToString()</td>
+                                </tr>
+                                i++;
+                            }
+                        </tbody>
+                    </table>
+                    <div class="modal" tabindex="-1" role="dialog" id="myModal">
+                        <div class="modal-dialog" role="document" id="modalD">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title"><b id="titulo"></b></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body modal-padding" id="modalBody">
+                                    <table border="1" class="table">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th scope="col">
+                                                    Producto
+                                                </th>
+                                                <th scope="col">
+                                                    Cantidad
+                                                </th>
+                                                <th scope="col">
+                                                    Costo
+                                                </th>
+                                                <th scope="col">
+                                                    ITBIS
+                                                </th>
+                                                <th scope="col">
+                                                    Total
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table2"></tbody>
+                                    </table>
+                                    <input type="hidden" id="hidden" name="hidden" value="0" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <style>
+                        .modal-padding {
+                            padding-left: 30px;
+                            padding-right: 30px;
+                        }
+
+                        .btn-size {
+                            width: 15%;
+                            position: relative;
+                            left: 3em;
+                            top: 3em;
+                            padding: 0em;
+                        }
+
+                        body {
+                            background-color: white;
+                        }
+
+                        .dropSize {
+                            width: 100%;
+                        }
+
+                        h6 {
+                            color: green;
+                        }
+                    </style>
+                    <script>
+        function ver_Detalles() {
+            var table = document.getElementById("table2");
+            var js = @Html.Raw(jsDetalles);
+            var table1 = document.getElementById('table1');
+            var count = -1;
+            var cn = 0;
+            var check = table1.getElementsByTagName("input");
+            for (var i = 0; i < check.length; i ++) {
+                if (check[i].checked) {
+                    if (count > -1) {
+                        count = -1;
+                        document.getElementById("alertaExito").className = "alert alert-warning";
+                        document.getElementById("alertaExito").innerHTML = "No puede seleccionar mas de una fila para entrar en modo edicion.";
+                        break;
+                    }
+                    count = cn;
+                }
+                cn++;
+            }
+            document.getElementById("titulo").innerHTML = "Orden No. " + table1.rows[count].cells[1].innerHTML;
+            for (var i = 0; i < js.length; i++) {
+                if (js[i].IdCompra == table1.rows[count].cells[1].innerHTML) {
+                    var tr = document.createElement("tr");
+                    var td1 = document.createElement("td");
+                    var td2 = document.createElement("td");
+                    var td3 = document.createElement("td");
+                    var td4 = document.createElement("td");
+                    var td5 = document.createElement("td");
+                    td1.innerHTML = js[i].Descripcion;
+                    td2.innerHTML = js[i].Costo;
+                    td3.innerHTML = "$" + js[i].Cantidad;
+                    td4.innerHTML = "$" + js[i].ITBIS;
+                    td5.innerHTML = "$" + js[i].Total;
+                    table.appendChild(tr);
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    tr.appendChild(td3);
+                    tr.appendChild(td4);
+                    tr.appendChild(td5);
+                }
+            }
+            $("#myModal").modal("show");
+        }
+
+
+
+        $(document).ready(function () {
+            $("#myModal").on("hidden.bs.modal", function () {
+                location.reload();
+            });
+        });
+                    </script>
+                </section>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
