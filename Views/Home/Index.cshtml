@@ -1,0 +1,331 @@
+﻿@{ 
+    ViewBag.Title = "Index";
+  //  Layout = "_formLayout";
+}
+
+<!DOCTYPE html>
+@using System.Data
+@using Veterimax.Controllers
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="~/css/main.css" />
+    <title></title>
+    <style>
+        #sidebar {
+            float: left;
+        }
+
+        #wrapper {
+            width: 75%;
+        }
+
+        .main {
+            width: 95%;
+        }
+    </style>
+</head>
+<body>
+    @{
+        Layout = "_LayoutPruebs";
+    }
+    <div id="wrapper" style="">
+        <div class="main">
+            @if (UsuarioController.idus == -1)
+            {
+                <script>
+            window.location.href = "@Url.Action("Login", "Usuario")";
+                </script>
+            }
+            @{
+                int usuario = UsuarioController.idus;
+                int tipo = UsuarioController.tipoUsuario;
+                string permiso = UsuarioController.permisos;
+                DataTable dtCitas = new DataTable();
+                MascotaController mc = new MascotaController();
+                dtCitas = mc.GetCitas();
+                CompraController cc = new CompraController();
+                var dtComprasPendientes = new DataTable();
+                dtComprasPendientes = cc.GetComprasPendientes();
+                ProductoController pc = new ProductoController();
+                var dtProductos = pc.GetProductosOrdenar();
+            }
+
+            <div class="wrapper">
+                <div class="main">
+                    <div class="inner">
+                        @if (permiso == "blah")
+                        {
+                            <section>
+                                <header class="major">
+                                    <h2>Por que Nosotros?</h2>
+                                </header>
+                                <div class="features">
+                                    <article>
+                                        <span class="icon fa-diamond"></span>
+                                        <div class="content">
+                                            <h3>FÁCIL</h3>
+                                            <p>No hace falta saber de informática. Cualquiera puede aprender a manejar Veterimax en cuestión de minutos..</p>
+                                        </div>
+                                    </article>
+                                    <article>
+                                        <span class="icon fa-paper-plane"></span>
+                                        <div class="content">
+                                            <h3>FIABLE</h3>
+                                            <p>Veterimax siempre está listo para funcionar y nunca te fallará.</p>
+                                        </div>
+                                    </article>
+                                    <article>
+                                        <span class="icon fa-rocket"></span>
+                                        <div class="content">
+                                            <h3>RENTABLE</h3>
+                                            <p>Incrementa los beneficios. Con Ágora dispondrás de las herramientas necesarias para que puedas mejorar tus procesos de trabajo.</p>
+                                        </div>
+                                    </article>
+                                    <article>
+                                        <span class="icon fa-signal"></span>
+                                        <div class="content">
+                                            <h3>PROFESIONAL</h3>
+                                            <p>Un extenso equipo de profesionales a tu servicio, para asesorarte y ayudarte.</p>
+                                        </div>
+                                    </article>
+                                </div>
+                            </section>
+
+                            <section>
+                                <header class="major">
+                                    <h2>veterimax</h2>
+                                </header>
+                                <div class="posts">
+                                    <article>
+                                        <a href="#" class="image"><img src="Images/p8.jpg" alt="" /></a>
+                                        <h3>Veterimax</h3>
+                                        <p>La grandeza de una nación y su progreso moral puede ser juzgada por la forma en que sus animales son tratados.</p>
+                                        <ul class="actions">
+                                            <li><a href="#" class="button">Mas</a></li>
+                                        </ul>
+                                    </article>
+                                    <article>
+                                        <a href="#" class="image"><img src="Images/p3.jpg" alt="" /></a>
+                                        <h3>Frase</h3>
+                                        <p>Los animales son muy buenos amigos; no hacen preguntas, no critícan.</p>
+                                        <ul class="actions">
+                                            <li><a href="#" class="button">Mas</a></li>
+                                        </ul>
+                                    </article>
+                                </div>
+                            </section>
+                            <!-- Section -->
+                            <section>
+                                <header class="major">
+                                    <h2>Nosotros</h2>
+                                </header>
+                                <div class="mini-posts">
+                                    <article>
+                                        <a href="#" class="image"><img src="Images/g-6.jpg" alt="" /></a>
+                                        <p></p>
+                                    </article>
+                                    <article>
+                                        <a href="#" class="image"><img src="Images/p4.jpg" alt="" /></a>
+                                        <p></p>
+                                    </article>
+                                </div>
+                                <ul class="actions">
+                                    <li><a href="#" class="button">Mas</a></li>
+                                </ul>
+                            </section>
+
+                        }
+
+                        @if (tipo == 2)
+                        {
+                            <section style="position:relative;bottom:40em;">
+                                <div class="row" style="">
+                                    <div class="col-sm-12">
+                                        <h4><b>Citas para hoy</b></h4>
+                                    </div>
+                                </div>
+                                <div class="row" style="">
+                                    <div class="col-sm-12">
+                                        <input type="text" id="buscar" placeholder="Filtrar" style="width:40%; margin-bottom:1em;" />
+                                    </div>
+                                </div>
+                                <div class="row" style="width:60%;">
+                                    <div class="col-sm-12">
+                                        <table border="1" class="table">
+                                            <thead class="thead-dark">
+                                                <tr>
+                                                    <th scope="col">ID</th>
+                                                    <th scope="col">Cliente</th>
+                                                    <th scope="col">Mascota</th>
+                                                    <th scope="col">Fecha Programada</th>
+                                                    <th scope="col">Horario</th>
+                                                    <th scope="col">Estado</th>
+                                                    <th scope="col">Fecha de Creacion</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="table1" style="color:black;">
+                                                @foreach (DataRow a in dtCitas.Rows)
+                                                {
+                                                    string str = a["Fecha"].ToString();
+                                                    string[] fecha = str.Split(' ');
+                                                    <tr>
+                                                        <td>@a["IdCita"].ToString()</td>
+                                                        <td>@a["NombreCompleto"].ToString()</td>
+                                                        <td>@a["Nombre"].ToString()</td>
+                                                        <td>@fecha[0]</td>
+                                                        <td>@fecha[1]</td>
+                                                        <td>@a["Estado"].ToString()</td>
+                                                        <td>@a["FechaRegistro"].ToString()</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+                        @if (tipo == 6)
+                        {
+                            <section style="position:relative;bottom:40em;">
+                                <div class="row" style="">
+                                    <div class="col-sm-12">
+                                        <h4><b>Ordenes de Compra Pendientes</b></h4>
+                                    </div>
+                                </div>
+                                <div class="row" style="">
+                                    <div class="col-sm-12">
+                                        <input type="text" id="buscar" placeholder="Filtrar" style="width:40%; margin-bottom:1em;" />
+                                    </div>
+                                </div>
+                                <table border="1" class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">
+                                                No. de Orden
+                                            </th>
+                                            <th scope="col">
+                                                Suplidor
+                                            </th>
+                                            <th scope="col">
+                                                Solicitante
+                                            </th>
+                                            <th scope="col">
+                                                Total de ITBIS
+                                            </th>
+                                            <th scope="col">
+                                                Monto Total
+                                            </th>
+                                            <th scope="col">
+                                                Estado
+                                            </th>
+                                            <th scope="col">
+                                                Fecha de Registro
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table1" style="color:black;">
+                                        @foreach (DataRow a in dtComprasPendientes.Rows)
+                                        {
+                                            string idCompra = a["IdCompra"].ToString();
+                                            <tr>
+                                                <td>@a["IdCompra"].ToString()</td>
+                                                <td>@a["Empresa"].ToString()</td>
+                                                <td>@a["Solicitante"].ToString()</td>
+                                                <td>$@a["TotalITBIS"].ToString()</td>
+                                                <td>$@a["Total"].ToString()</td>
+                                                <td>@a["Estado"].ToString()</td>
+                                                <td>@a["FechaRegistro"].ToString()</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </section>
+
+                        }
+                        @if (tipo == 1)
+                        {
+                            <section style="position:relative;">
+                                <div class="row" style="">
+                                    <div class="col-sm-12">
+                                        <h4><b>Existencias Actuales</b></h4>
+                                    </div>
+                                </div>
+                                <div class="row" style="">
+                                    <div class="col-sm-12">
+                                        <input type="text" id="buscar" placeholder="Filtrar" style="width:40%; margin-bottom:1em;" />
+                                    </div>
+                                </div>
+                                <table border="1" class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">
+                                                Codigo
+                                            </th>
+                                            <th scope="col">
+                                                Categoria
+                                            </th>
+                                            <th scope="col">
+                                                Descripcion
+                                            </th>
+                                            <th scope="col">
+                                                Existencias
+                                            </th>
+                                            <th scope="col">
+                                                Estado
+                                            </th>
+                                            <th scope="col">
+                                                Punto de Reorden
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table1" style="color: black;">
+                                        @foreach (DataRow x in dtProductos.Rows)
+                                        {
+                                            string style = "";
+                                            @if (Convert.ToDouble(x["PuntoReorden"]) / 0.8 >= Convert.ToDouble(x["Cantidad"]))
+                                            {
+                                                style = "color:red;";
+                                            }
+                                            <tr style="@style">
+                                                <td>@x["IdProducto"].ToString()</td>
+                                                <td>@x["Categoria"].ToString()</td>
+                                                <td>@x["Descripcion"].ToString()</td>
+                                                <td>@x["Cantidad"].ToString()</td>
+                                                <td>@x["Estado"].ToString()</td>
+                                                <td>@x["PuntoReorden"].ToString()</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </section>
+
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Section -->
+            <script type="text/javascript">
+                                                       // $(document).ready(function () {
+                                                            /*
+                                                            var defaults = {
+                                                                    containerID: 'toTop', // fading element id
+                                                                containerHoverID: 'toTopHover', // fading element hover id
+                                                                scrollSpeed: 1200,
+                                                                easingType: 'linear'
+                                                                };
+                                                            */
+
+                                                           // $().UItoTop({ easingType: 'easeOutQuart' });
+
+                                                        //});
+            </script>
+
+        </div>
+    </div>
+</body>
+
+</html>

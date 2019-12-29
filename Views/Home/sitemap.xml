@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>http://Website.com.do/index.html</loc>
+    <lastmod>2018-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+    <image:image>
+      <image:loc>http://Website.com.do/images/3adc7aea-4889-46d5-ad9e-975c8bee00ec-crop-u142.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>http://Website.com.do/images/at0815_problemas_comportamiento_cachorros-crop-u274.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>http://Website.com.do/images/como-adiestrar-a-perros-cachorros-crop-u322.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>http://Website.com.do/images/cachorro-tumbado-en-la-hierba-crop-u349.jpg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://Website.com.do/servicios.html</loc>
+    <lastmod>2018-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>http://Website.com.do/suplidores.html</loc>
+    <lastmod>2018-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>http://Website.com.do/inventario.html</loc>
+    <lastmod>2018-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>http://Website.com.do/contacto.html</loc>
+    <lastmod>2018-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>
